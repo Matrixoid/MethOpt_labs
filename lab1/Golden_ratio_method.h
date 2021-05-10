@@ -1,0 +1,38 @@
+#pragma once
+
+#include "All_inclusive.h"
+
+struct Golden_ratio_method {
+	double operator()(double a, double b, double eps) {
+		double t = (sqrt(5) - 1) / 2;
+
+		double x1 = a + (1 - t) * (b - a);
+		double x2 = a + t * (b - a);
+
+		double f1 = function(x1);
+		double f2 = function(x2);
+		double eps_n = (b - a) / 2;
+
+		while (eps_n > eps) {
+			if (f1 - f2 <= eps) {
+				b = x2;
+				x2 = x1;
+				f2 = f1;
+				x1 = a + (1 - t) * (b - a);
+				f1 = function(x1);
+			}
+			else {
+				a = x1;
+				x1 = x2;
+				f1 = f2;
+				x2 = a + t * (b - a);
+				f2 = function(x2);
+			}
+			eps_n *= t;
+		}
+
+		double x = (a + b) / 2;
+		double f = function(x);
+		return f;
+	}
+};
