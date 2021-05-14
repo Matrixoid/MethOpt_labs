@@ -10,12 +10,14 @@
 std::vector<std::string> Parser(std::string function) {
 	std::string cur;
 	std::vector<std::string> split;
+	std::vector<char> signs;
 	std::string ch = "";
 	for (int i = 0; i < function.size(); i++) {
 		if (function[i] == 32 && function[i + 1] != 32) {
 			continue;
 		}
-		if (function[i] == '+') {
+		if (function[i] == '+' || function[i] == '-') {
+			signs.push_back(function[i]);
 			if (ch == " ") {
 				cur.pop_back();
 			}
@@ -86,7 +88,7 @@ std::vector<std::string> Parser(std::string function) {
 							int l = j;
 							j = (j >= var.size() + 1) ? j - var.size() - 1 : 0;
 							std::string left = s.substr(0, j);
-							std::string right = (j + var.size() + 1 > s.size()) ? s.substr(j + var.size()) : s.substr(j + var.size() + 1);//s.substr(j + var.size());
+							std::string right = (j + var.size() + 1 > s.size()) ? s.substr(j + var.size()) : s.substr(j + var.size() + 1);
 							darivative += left;
 							darivative += right;
 							flag = true;
@@ -106,11 +108,14 @@ std::vector<std::string> Parser(std::string function) {
 				gr.pop_back();
 			parts_grad_part.push_back(gr);
 		}
+		int sn = 0;
 		for (std::string gr : parts_grad_part) {
 			if (gr == "0") {
+				sn++;
 				continue;
 			}
-			grad_part += gr + "+";
+			grad_part += gr + ((sn != signs.size()) ? signs[sn] : '+');
+			sn++;
 		}
 		grad_part.pop_back();
 		grad.push_back(grad_part);

@@ -15,6 +15,15 @@ std::pair<double, int> get_number(std::string func, long long n) {
 	int i = 0;
 	int sign_after_coma = 0;
 	bool flag = false;
+	char sign = '+';
+	if (func[0] == '-' || func[0] == '+') {
+		if (func[0] == '-') {
+			sign = '-';
+			func = func.erase(0, 1);
+		}
+		else
+			func = func.erase(0, 1);
+	}
 	while ((func[i] >= '0' && func[i] <= '9' || func[i] == '.') && i < func.size()) {
 		if (flag) {
 			sign_after_coma++;
@@ -50,7 +59,7 @@ std::pair<double, int> get_number(std::string func, long long n) {
 	}
 
 	std::pair<double, int> res;
-	res.first = a;
+	res.first = (sign == '+') ? a : -a;
 	res.second = i;
 	return res;
 }

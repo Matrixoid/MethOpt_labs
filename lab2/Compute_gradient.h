@@ -5,15 +5,27 @@
 
 #include "get_Number.h"
 
+double norm(std::vector <double> grad) 
+{
+	double res = 0;
+	for (int i = 0; i < grad.size(); i++)
+		res += grad[i] * grad[i];
+	res = sqrt(res);
+	return res;
+}
+
 double compute_function(std::string function, std::map<std::string, double> x) {
 	std::string cur;
+	std::vector<char> signs;
+	signs.push_back('+');
 	std::vector<std::string> split;
 	std::string ch = "";
 	for (int i = 0; i < function.size(); i++) {
 		if (function[i] == 32 && function[i + 1] != 32) {
 			continue;
 		}
-		if (function[i] == '+') {
+		if (function[i] == '+' || function[i] == '-') {
+			signs.push_back(function[i]);
 			if (ch == " ") {
 				cur.pop_back();
 			}
@@ -32,7 +44,10 @@ double compute_function(std::string function, std::map<std::string, double> x) {
 	}
 
 	double res = 0;
+	int sn = 0;
 	for (std::string s : split) {
+		if (s == "")
+			res--;
 		double temp_res = get_number(s, 1).first;
 		for (int i = 0; i < s.size(); i++) {
 			std::string var = "";
@@ -57,7 +72,13 @@ double compute_function(std::string function, std::map<std::string, double> x) {
 
 			ch = s[i];
 		}
-		res += temp_res;
+		if (signs[sn] == '+') {
+			res += temp_res;
+		}
+		else {
+			res -= temp_res;
+		}
+		sn++;
 	}
 	return res;
 }
