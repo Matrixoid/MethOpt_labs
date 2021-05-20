@@ -1,6 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
+
+struct Comp {
+	bool operator()(std::pair<long double, int> a, std::pair<long double, int> b) {
+		return a.second < b.second;
+	}
+};
 
 int main()
 {
@@ -17,7 +24,8 @@ int main()
 	std::vector<int> ia;
 	ia.push_back(1);
 	std::vector<double> al;
-	std::vector<double> au;
+	std::vector <std::pair<long double, int>> au;
+	std::vector<int> helper(n);
 
 	for (int i = 0; i < n; i++) {
 		bool flagl = false;
@@ -37,11 +45,30 @@ int main()
 				}
 			}
 			else {
-				au.push_back(1);
+				if (elem != 0) {
+					helper[j] = helper[j] != 0 ? helper[j] : i + 1;
+				}
 			}
 		}
 		ia.push_back(ia[ia.size() - 1] + l);
 	}
+	File.close();
+	File.open("input.txt");
+	File >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; ++j) {
+			double elem;
+			File >> elem;
+			if (j > i) {
+				if (helper[j] <= i + 1 && helper[j] != 0) {
+					au.emplace_back(elem, j);
+				}
+			}
+		}
+	}
+
+	File.close();
+	std::stable_sort(au.begin(), au.end(), Comp());
 
 	for (double d : di) {
 		std::cout << d << " ";
@@ -56,6 +83,12 @@ int main()
 	for (double l : al) {
 		std::cout << l << " ";
 	}
+	std::cout << std::endl;
+	
+	for (std::pair<double, int> u : au) {
+		std::cout << u.first << " ";
+	}
+	std::cout << std::endl;
 
 	File.close();
 	F.close();
