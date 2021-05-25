@@ -5,7 +5,37 @@
 
 #include "get_Number.h"
 
+std::vector<std::vector<double>> A;
+std::vector<double> b;
 
+void compute_matrix(std::string function) {
+	std::string cur;
+	std::vector<std::string> split;
+	std::vector<char> signs;
+	std::string ch = "";
+	for (int i = 0; i < function.size(); i++) {
+		if (function[i] == 32 && function[i + 1] != 32) {
+			continue;
+		}
+		if (function[i] == '+' || function[i] == '-') {
+			signs.push_back(function[i]);
+			if (ch == " ") {
+				cur.pop_back();
+			}
+			split.push_back(cur);
+			cur = "";
+			continue;
+		}
+		cur += function[i];
+		ch = function[i];
+
+		if (i == function.size() - 1) {
+			split.push_back(cur);
+			cur = "";
+			ch = "";
+		}
+	}
+}
 
 std::vector<std::string> Parser(std::string function) {
 	std::string cur;

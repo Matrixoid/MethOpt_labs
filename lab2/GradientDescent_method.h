@@ -7,14 +7,14 @@
 
 struct GradientDescent_method {
 	double operator()(std::string function) {
-		double yeps = 1e-8, alpha = 512;
+		double eps = 1e-8, alpha = 512;
 		std::map<std::string, double> x;
 		x["x"] = 1;
 		x["y"] = 5;
 		double f = compute_function(function, x);
 		while (true) {
 			std::vector<double> gradient = compute_gradient(Parser(function), x);
-			if (norm(gradient) < yeps) {
+			if (norm(gradient) < eps) {
 				std::map<std::string, double>x_ = x;
 				f = compute_function(function, x);
 				return f;
