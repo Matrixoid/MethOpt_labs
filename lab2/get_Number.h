@@ -10,9 +10,8 @@ std::string toString(long double num) {
 }
 
 std::pair<double, int> get_number(std::string func, long long n) {
-
-	std::string num = "";
-	int i = 0;
+	std::string num;
+	int k = 0;
 	int sign_after_coma = 0;
 	bool flag = false;
 	char sign = '+';
@@ -24,17 +23,17 @@ std::pair<double, int> get_number(std::string func, long long n) {
 		else
 			func = func.erase(0, 1);
 	}
-	while ((func[i] >= '0' && func[i] <= '9' || func[i] == '.') && i < func.size()) {
+	while ((func[k] >= '0' && func[k] <= '9' || func[k] == '.') && k < func.size()) {
 		if (flag) {
 			sign_after_coma++;
 		}
-		if (func[i] == '.') {
+		if (func[k] == '.') {
 			flag = true;
-			i++;
+			k++;
 			continue;
 		}
-		num += func[i];
-		i++;
+		num += func[k];
+		k++;
 	}
 	long double a = 0;
 	long long dec = 1;
@@ -44,7 +43,7 @@ std::pair<double, int> get_number(std::string func, long long n) {
 		a += d * dec;
 		dec *= 10;
 	}
-	if (num == "") {
+	if (num.empty()) {
 		a = 1;
 	}
 	a *= n;
@@ -60,6 +59,6 @@ std::pair<double, int> get_number(std::string func, long long n) {
 
 	std::pair<double, int> res;
 	res.first = (sign == '+') ? a : -a;
-	res.second = i;
+	res.second = k;
 	return res;
 }

@@ -2,14 +2,15 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <cmath>
 
 #include "get_Number.h"
 
-double norm(std::vector <double> grad) 
+double norm(const std::vector <double>& grad)
 {
 	double res = 0;
-	for (int i = 0; i < grad.size(); i++)
-		res += grad[i] * grad[i];
+	for (double i : grad)
+		res += i * i;
 	res = sqrt(res);
 	return res;
 }
@@ -19,7 +20,7 @@ double compute_function(std::string function, std::map<std::string, double> x) {
 	std::vector<char> signs;
 	signs.push_back('+');
 	std::vector<std::string> split;
-	std::string ch = "";
+	std::string ch;
 	for (int i = 0; i < function.size(); i++) {
 		if (function[i] == 32 && function[i + 1] != 32) {
 			continue;

@@ -8,7 +8,7 @@
 
 struct SteepestDescent_mathod {
 
-	double operator()(std::string function) {
+	double operator()(const std::string& function) {
 		std::map<std::string, double> x;
 		double yeps = 1e-7;
 		double f = compute_function(function, x);
