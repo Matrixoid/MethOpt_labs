@@ -7,37 +7,6 @@
 
 #include "get_Number.h"
 
-std::vector<double> b;
-
-void compute_matrix(std::string function) {
-	std::string cur;
-	std::vector<std::string> split;
-	std::vector<char> signs;
-	std::string ch;
-	for (int i = 0; i < function.size(); i++) {
-		if (function[i] == 32 && function[i + 1] != 32) {
-			continue;
-		}
-		if (function[i] == '+' || function[i] == '-') {
-			signs.push_back(function[i]);
-			if (ch == " ") {
-				cur.pop_back();
-			}
-			split.push_back(cur);
-			cur = "";
-			continue;
-		}
-		cur += function[i];
-		ch = function[i];
-
-		if (i == function.size() - 1) {
-			split.push_back(cur);
-			cur = "";
-			ch = "";
-		}
-	}
-}
-
 std::vector<std::string> split(std::vector<char>& signs, const std::string & function) {
 	std::string ch;
 	std::string cur;
@@ -258,7 +227,7 @@ std::string bringing_similar(const std::string& function, const std::map<std::st
 			}
 			A[x_to_num[spl1[1]]][x_to_num[spl1[2]]] += get_number(spl1[0], 1).first;
 		}
-		else if (spl1.size() == 1) {
+		else if (spl1.size() == 2) {
 			B[x_to_num[spl1[1]]] += get_number(spl1[0], 1).first;
 		}
 		else {
@@ -315,4 +284,22 @@ std::string return_function(std::vector<std::vector<double>> A, std::vector<doub
 
 	return bringing_similar(res, x);
 }
-void substitute()
+
+std::string multiply_strings(std::string s1, std::string s2) {
+	std::string res;
+	std::vector<char> signs1;
+	std::vector<std::string> spl1 = split(signs1, s1);
+	std::vector<char> signs2;
+	std::vector<std::string> spl2 = split(signs2, s2);
+
+	for (int i = 0; i < spl1.size(); i++) {
+		for (int j = 0; j < spl2.size(); j++) {
+
+		}
+	}
+}
+
+void substitute(std::string function, std::map<std::string, std::string> x) {
+	std::vector<char> signs;
+	std::vector<std::string> spl = split(signs, function);
+}
