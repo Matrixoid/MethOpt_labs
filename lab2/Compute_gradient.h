@@ -96,7 +96,7 @@ std::vector<double> compute_gradient(std::vector<std::string> gradient, std::map
 
 std::vector<double> negate(std::vector<double> grad) {
 	std::vector<double> res = grad;
-	for (int i = 0; i < grad.size(); i++)
+	for (int i = 0; i < res.size(); i++)
 		res[i] *= -1;
 	return res;
 }
@@ -105,11 +105,12 @@ std::vector<double> matrix_multiply(std::vector<std::vector<double>> A, std::vec
 	std::vector<double> res;
 	for (int i = 0; i < A.size(); i++) {
 		int sum = 0;
-		for (int j = 0; j < A[i].size(); i++) {
+		for (int j = 0; j < A[i].size(); j++) {
 			sum += A[i][j] * p[j];
 		}
 		res.push_back(sum);
 	}
+	return res;
 }
 
 std::vector<double> matrix_multiply(std::vector<std::vector<double>> A, std::map<std::string, double> x) {
@@ -117,11 +118,13 @@ std::vector<double> matrix_multiply(std::vector<std::vector<double>> A, std::map
 	for (int i = 0; i < A.size(); i++) {
 		int sum = 0;
 		std::map<std::string, double>::iterator it = x.begin();
-		for (int j = 0; j < A[i].size(); i++) {
+		for (int j = 0; j < A[i].size(); j++) {
 			sum += A[i][j] * it->second;
+			it++;
 		}
 		res.push_back(sum);
 	}
+	return res;
 }
 
 std::vector<double> matrix_sum(std::map<std::string, double> x1, std::map<std::string, double> x2) {
@@ -176,7 +179,7 @@ std::vector<double> matrix_sub(std::vector<double> x1, std::vector<double> x2) {
 
 std::vector<double> const_multiply(double constant, std::vector<double> p) {
 	std::vector<double> res;
-	for (int i = 0; i > p.size(); i++) {
+	for (int i = 0; i < p.size(); i++) {
 		res.push_back(constant * p[i]);
 	}
 	return res;

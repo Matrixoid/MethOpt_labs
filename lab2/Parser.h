@@ -2,6 +2,7 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <map>
 
 #include "get_Number.h"
 
@@ -37,11 +38,10 @@ void compute_matrix(std::string function) {
 	}
 }
 
-std::vector<std::string> Parser(std::string function) {
-	std::string cur;
-	std::vector<std::string> split;
-	std::vector<char> signs;
+std::vector<std::string> split(std::vector<char>& signs, const std::string function) {
 	std::string ch = "";
+	std::string cur;
+	std::vector<std::string> spl;
 	for (int i = 0; i < function.size(); i++) {
 		if (function[i] == 32 && function[i + 1] != 32) {
 			continue;
@@ -51,7 +51,7 @@ std::vector<std::string> Parser(std::string function) {
 			if (ch == " ") {
 				cur.pop_back();
 			}
-			split.push_back(cur);
+			spl.push_back(cur);
 			cur = "";
 			continue;
 		}
@@ -59,37 +59,49 @@ std::vector<std::string> Parser(std::string function) {
 		ch = function[i];
 
 		if (i == function.size() - 1) {
-			split.push_back(cur);
+			spl.push_back(cur);
 			cur = "";
 			ch = "";
 		}
 	}
+	return spl;
+}
 
-	std::set<std::string> vars;
-	for (std::string s : split) {
-		for (int i = 0; i < s.size(); i++) {
-			std::string var = "";
-			if (s[0] < '0' || s[0] >'9') {
-				while (s[i] != 42 && i < s.size()) {
-					var += s[i];
-					i++;
-				}
-				vars.insert(var);
-				var = "";
-				ch = "";
+void get_vars(std::string s, std::set<std::string>& vars) {
+	std::string ch = "";
+	std::string var = "";
+	for (int i = 0; i < s.size(); i++) {
+		if (s[0] < '0' || s[0] >'9') {
+			while (s[i] != 42 && i < s.size()) {
+				var += s[i];
+				i++;
 			}
-			if (ch == "*") {
-				while (s[i] != 42 && i < s.size()) {
-					var += s[i];
-					i++;
-				}
-				vars.insert(var);
-				var = "";
-				ch = "";
-			}
-
-			ch = s[i];
+			vars.insert(var);
+			var = "";
+			ch = "";
 		}
+		if (ch == "*") {
+			while (s[i] != 42 && i < s.size()) {
+				var += s[i];
+				i++;
+			}
+			vars.insert(var);
+			var = "";
+			ch = "";
+		}
+
+		ch = s[i];
+	}
+}
+
+std::vector<std::string> Parser(std::string function) {
+	std::vector<char> signs;
+
+	std::vector<std::string> spl = split(signs, function);
+	std::string ch = "";
+	std::set<std::string> vars;
+	for (std::string s : spl) {
+		get_vars(s, vars);
 	}
 
 	std::vector<std::string> variables;
@@ -102,7 +114,7 @@ std::vector<std::string> Parser(std::string function) {
 		std::vector<std::string> parts_grad_part;
 		std::string grad_part = "";
 		std::string var = variables[i];
-		for (std::string s : split) {
+		for (std::string s : spl) {
 			std::vector<int> variables_cnt(variables.size());
 			std::string cur = "";
 			std::string darivative = "";
@@ -152,4 +164,37 @@ std::vector<std::string> Parser(std::string function) {
 	}
 
 	return grad;
+}
+
+std::vector<int> get_indexes(std::string part, std::map<std::string, double> x) {
+	std::set<std::string> vars;
+	get_vars(part, vars);
+	std::vector<int> res;
+	int i = 0;
+	for (std::pair<std::string, double> p : x) {
+		if (vars.find(p.first) != vars.end()) {
+			res.push_back(i);
+		}
+		i++;
+	}
+	return res;
+}
+
+std::vector<std::vector<double>> get_A(std::string function, std::map<std::string, double> x) {
+	std::vector<char> signs;
+	std::vector<std::string> spl = split(signs, function);
+	std::vector<std::vector<double>> A(x.size(), std::vector<double>(x.size()));
+	
+	for (std::string s : spl) {
+		std::vector<int> indexes = get_indexes(s, x);
+		if (indexes.size() == 1) {
+			A[indexes[0]][indexes[0]] = get_number(s, 1).first;
+		}
+		else {
+			A[indexes[0]][indexes[1]] = get_number(s, 2).first;
+			A[indexes[1]][indexes[0]] = get_number(s, 2).first;
+		}
+		
+	}
+	return A;
 }
