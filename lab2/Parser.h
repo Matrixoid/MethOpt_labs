@@ -67,6 +67,34 @@ std::vector<std::string> split(std::vector<char>& signs, const std::string funct
 	return spl;
 }
 
+std::vector<std::string> split_by_mul(std::string part) {
+	std::string ch = "";
+	std::string cur;
+	std::vector<std::string> spl;
+	for (int i = 0; i < part.size(); i++) {
+		if (part[i] == 32 && part[i + 1] != 32) {
+			continue;
+		}
+		if (part[i] == '*') {
+			if (ch == " ") {
+				cur.pop_back();
+			}
+			spl.push_back(cur);
+			cur = "";
+			continue;
+		}
+		cur += part[i];
+		ch = part[i];
+
+		if (i == part.size() - 1) {
+			spl.push_back(cur);
+			cur = "";
+			ch = "";
+		}
+	}
+	return spl;
+}
+
 void get_vars(std::string s, std::set<std::string>& vars) {
 	std::string ch = "";
 	std::string var = "";
@@ -188,11 +216,11 @@ std::vector<std::vector<double>> get_A(std::string function, std::map<std::strin
 	for (std::string s : spl) {
 		std::vector<int> indexes = get_indexes(s, x);
 		if (indexes.size() == 1) {
-			A[indexes[0]][indexes[0]] = get_number(s, 1).first;
+			A[indexes[0]][indexes[0]] = get_number(s, 2).first;
 		}
 		else {
-			A[indexes[0]][indexes[1]] = get_number(s, 2).first;
-			A[indexes[1]][indexes[0]] = get_number(s, 2).first;
+			A[indexes[0]][indexes[1]] = get_number(s, 1).first;
+			A[indexes[1]][indexes[0]] = get_number(s, 1).first;
 		}
 		
 	}
