@@ -195,6 +195,8 @@ std::vector<std::string> Parser(std::string function) {
 }
 
 std::vector<int> get_indexes(std::string part, std::map<std::string, double> x) {
+	//std::vector<std::string> spl = split_by_mul(part);
+
 	std::set<std::string> vars;
 	get_vars(part, vars);
 	std::vector<int> res;
@@ -225,4 +227,87 @@ std::vector<std::vector<double>> get_A(std::string function, std::map<std::strin
 		
 	}
 	return A;
+}
+
+std::string bringing_similar(std::string function, std::map<std::string, double> x) {
+	std::string res = "";
+
+	std::map<std::string, int> x_to_num;
+	std::map<int, std::string> num_to_x;
+	int i = 0;
+	for (std::pair<std::string, double> p : x) {
+		x_to_num[p.first] = i;
+		num_to_x[i] = p.first;
+		i++;
+	}
+	std::vector<std::vector<double>> _A(x.size(), std::vector<double>(x.size()));
+	std::vector<double> _B(x.size());
+	double _C = 0;
+
+	std::vector<char> signs;
+	std::vector<std::string> spl = split(signs, function);
+	for (std::string s : spl) {
+		std::vector<std::string> spl1 = split_by_mul(s);
+		if (spl1.size() == 3) {
+			if (spl1[1] > spl1[2]) {
+				std::swap(spl1[1], spl1[2]);
+			}
+			_A[x_to_num[spl1[1]]][x_to_num[spl1[2]]] += get_number(spl1[0], 1).first;
+		}
+		else if (spl1.size() == 1) {
+			_B[x_to_num[spl1[1]]] += get_number(spl1[0], 1).first;
+		}
+		else {
+			_C += get_number(spl1[0], 1).first;
+		}
+	}
+
+	for (int i = 0; i < x.size(); i++) {
+		for (int j = i; j < x.size(); j++) {
+			res += (_A[i][j] != 0) ? ((_A[i][j] != 1) ? toString(_A[i][j] / 2) + "*" : "") + num_to_x[i] + "*" + num_to_x[j] + "+" : "";
+		}
+	}
+
+	for (int i = 0; i < x.size(); i++) {
+		res += (_B[i] != 0) ? ((_B[i] != 1) ? toString(_B[i]) + "*" : "") + num_to_x[i] + "+" : "";
+	}
+
+	if (_C != 0) {
+		res += toString(_C);
+	}
+	else {
+		res.erase(res.size() - 1);
+	}
+
+	return res;
+
+}
+
+std::string return_function(std::vector<std::vector<double>> A, std::vector<double> B, double C, std::map<std::string, double> x) {
+	std::string res = "";
+	
+	int i = 0;
+	int j = 0;
+	for (std::pair<std::string, double> p1 : x) {
+		for (std::pair<std::string, double> p2 : x) {
+			res += (A[i][j] != 0) ? ((A[i][j] / 2 != 1) ? toString(A[i][j] / 2) + "*" : "") + p1.first + "*" + p2.first + "+" : "";
+			j++;
+		}
+		j = 0;
+		i++;
+	}
+
+	i = 0;
+	for (std::pair<std::string, double> p : x) {
+		res += (B[i] != 0) ? ((B[i] != 1) ? toString(B[i]) + "*" : "") + p.first + "+" : "";
+	}
+
+	if (C != 0) {
+		res += toString(C);
+	}
+	else {
+		res.erase(res.size() - 1);
+	}
+
+	return bringing_similar(res, x);
 }
