@@ -37,7 +37,7 @@ std::pair<double, int> get_number(std::string func, long long n) {
 	}
 	long double a = 0;
 	long long dec = 1;
-	for (int i = num.size() - 1; i >= 0; i--) {
+	for (u_long i = num.size() - 1; i >= 0; i--) {
 		char dig = num[i];
 		int d = dig - 48;
 		a += d * dec;
@@ -63,17 +63,17 @@ std::pair<double, int> get_number(std::string func, long long n) {
 	return res;
 }
 
-std::string skip_whitespace(std::string s) {
+std::string skip_whitespace(const std::string& s) {
 	std::string res;
-	for (int i = 0; i < s.size(); i++) {
-		if (s[i] != 32) {
-			res += s[i];
+	for (char i : s) {
+		if (i != 32) {
+			res += i;
 		}
 	}
 	return res;
 }
 
-std::string remove_number(std::string s) {
+std::string remove_number(const std::string& s) {
 	std::pair<double, int> n = get_number(s, 1);
 	std::string res = skip_whitespace(s);
 	for (int i = 0; i <= n.second; i++) {

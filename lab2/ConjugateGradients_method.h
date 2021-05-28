@@ -8,7 +8,7 @@
 
 struct ConjugateGradient_method {
 
-	double operator()(std::string function) {
+	double operator()(const std::string& function) {
 		std::map<std::string, double> x;
 		x["x"] = 4;
 		x["y"] = 19;
