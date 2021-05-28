@@ -14,7 +14,10 @@ int main()
 	std::vector<double> _B = { 0, 0 };
 	double _C = 0;
 	//std::string f = return_function(_A, _B, _C, x);
-	std::string f1 = "x + x + x * x + y + y * y + y * x + x * y + y * y";
+	std::string f1 = "x + x + x * x + y + y * y + 2 * y * x + 3 * x * y + y * y";
 	f1 = bringing_similar(f1, x);
-	std::cout << f1 << "\n";
+	//std::cout << f1 << "\n";
+	std::string v = "-2 * x * x";
+	double l = get_number(v, -1).second;
+	std::cout << l;
 }

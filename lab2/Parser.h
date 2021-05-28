@@ -294,12 +294,16 @@ std::string multiply_strings(std::string s1, std::string s2) {
 
 	for (int i = 0; i < spl1.size(); i++) {
 		for (int j = 0; j < spl2.size(); j++) {
-
+			long double n = get_number(spl1[i], get_number(spl2[j], 1).first).first;
+			std::string s1 = remove_number(spl1[i]);
+			std::string s2 = remove_number(spl2[j]);
+			std::string tmp = toString(n) + "*" + s1 + "*" + s2;
+			res += tmp + "+";
 		}
 	}
 }
 
-void substitute(std::string function, std::map<std::string, std::string> x) {
+/*void substitute(std::string function, std::map<std::string, std::string> x) {
 	std::vector<char> signs;
 	std::vector<std::string> spl = split(signs, function);
-}
+}*/

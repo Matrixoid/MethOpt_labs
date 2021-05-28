@@ -59,6 +59,25 @@ std::pair<double, int> get_number(std::string func, long long n) {
 
 	std::pair<double, int> res;
 	res.first = (sign == '+') ? a : -a;
-	res.second = k;
+	res.second = (sign == '+') ? k : k + 1;
+	return res;
+}
+
+std::string skip_whitespace(std::string s) {
+	std::string res;
+	for (int i = 0; i < s.size(); i++) {
+		if (s[i] != 32) {
+			res += s[i];
+		}
+	}
+	return res;
+}
+
+std::string remove_number(std::string s) {
+	std::pair<double, int> n = get_number(s, 1);
+	std::string res = skip_whitespace(s);
+	for (int i = 0; i <= n.second; i++) {
+		res.erase(0, 1);
+	}
 	return res;
 }
