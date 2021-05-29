@@ -37,7 +37,7 @@ std::pair<double, int> get_number(std::string func, long long n) {
 	}
 	long double a = 0;
 	long long dec = 1;
-	for (u_long i = num.size() - 1; i >= 0; i--) {
+	for (int i = num.size() - 1; i >= 0; i--) {
 		char dig = num[i];
 		int d = dig - 48;
 		a += d * dec;

@@ -119,7 +119,7 @@ std::vector<std::string> Parser(const std::string & function) {
 			std::string cur;
 			std::string darivative;
 			bool flag = false;
-			for (u_long j = 0; j < s.size(); j++) {
+			for (int j = 0; j < s.size(); j++) {
 					while (s[j] != 42 && j < s.size()) {
 						cur += s[j];
 						j++;
@@ -167,17 +167,21 @@ std::vector<std::string> Parser(const std::string & function) {
 }
 
 std::vector<int> get_indexes(std::string part, const std::map<std::string, double>& x) {
-	//std::vector<std::string> spl = split_by_mul(part);
-
-	std::set<std::string> vars;
-	get_vars(std::move(part), vars);
-	std::vector<int> res;
+	std::vector<std::string> spl = split_by_mul(part);
+	spl.erase(spl.begin(), spl.begin() + 1);
+	std::map<std::string, int> x_to_num;
 	int i = 0;
-	for (const auto& p : x) {
-		if (vars.find(p.first) != vars.end()) {
-			res.push_back(i);
-		}
+	for (const std::pair<std::string, double>& p : x) {
+		x_to_num[p.first] = i;
 		i++;
+	}
+
+	std::vector<int> res;
+
+	for (const std::string& s : spl) {
+		if (x.find(s) != x.end()) {
+			res.push_back(x_to_num[s]);
+		}
 	}
 	return res;
 }
@@ -189,14 +193,15 @@ std::vector<std::vector<double>> get_A(const std::string& function, const std::m
 	
 	for (const std::string& s : spl) {
 		std::vector<int> indexes = get_indexes(s, x);
-		if (indexes.size() == 1) {
-			A[indexes[0]][indexes[0]] = get_number(s, 2).first;
+		if (indexes.size() == 2) {
+			if (indexes[0] == indexes[1]) {
+				A[indexes[0]][indexes[0]] = get_number(s, 2).first;
+			}
+			else {
+				A[indexes[0]][indexes[1]] = get_number(s, 1).first;
+				A[indexes[1]][indexes[0]] = get_number(s, 1).first;
+			}
 		}
-		else {
-			A[indexes[0]][indexes[1]] = get_number(s, 1).first;
-			A[indexes[1]][indexes[0]] = get_number(s, 1).first;
-		}
-		
 	}
 	return A;
 }
@@ -284,7 +289,7 @@ std::string return_function(std::vector<std::vector<double>> A, std::vector<doub
 	return bringing_similar(res, x);
 }
 
-std::string multiply_strings(const std::string& s1, const std::string& s2) {
+/*std::string multiply_strings(const std::string& s1, const std::string& s2) {
 	std::string res;
 	std::vector<char> signs1;
 	std::vector<std::string> spl1 = split(signs1, s1);
@@ -300,7 +305,7 @@ std::string multiply_strings(const std::string& s1, const std::string& s2) {
 			res += tmp + "+";
 		}
 	}
-}
+}*/
 
 /*void substitute(std::string function, std::map<std::string, std::string> x) {
 	std::vector<char> signs;
