@@ -44,3 +44,10 @@ void output(const std::vector<char>& signs) {
 	}
 	std::cout << std::endl;
 }
+
+void output(std::vector<std::string> vec) {
+	for (int i = 0; i < vec.size(); i++) {
+		std::cout << vec[i] << " ";
+	}
+	std::cout << std::endl;
+}
