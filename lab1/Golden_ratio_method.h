@@ -1,7 +1,7 @@
 #pragma once
 
 #include "All_inclusive.h"
-#include "../../MethOpt lab 2/MethOpt lab 2/Compute_gradient.h"
+#include "../lab2/Compute_gradient.h"
 
 struct Golden_ratio_method {
 	double operator()(double a, double b, double eps) {
@@ -39,13 +39,13 @@ struct Golden_ratio_method {
 
 	double operator()(std::string func, double a, double b, double eps) {
 		double t = (sqrt(5) - 1) / 2;
-		std::map<std::string, double> x1;
-		std::map<std::string, double> x2;
+		std::map<std::string,long  double> x1;
+		std::map<std::string, long double> x2;
 		x1["x"] = a + (1 - t) * (b - a);
 		x2["x"] = a + t * (b - a);
 
-		double f1 = compute_function(func, x1);
-		double f2 = compute_function(func, x2);
+		long double f1 = compute_function(func, x1);
+		long double f2 = compute_function(func, x2);
 		double eps_n = (b - a) / 2;
 
 		while (eps_n > eps) {
@@ -65,9 +65,9 @@ struct Golden_ratio_method {
 			}
 			eps_n *= t;
 		}
-		std::map<std::string, double> x;
+		std::map<std::string,long double> x;
 		x["x"] = (a + b) / 2;
-		double f = compute_function(func, x);
+		long double f = compute_function(func, x);
 		return x["x"];
 	}
 };
