@@ -6,17 +6,17 @@
 #include "Parser.h"
 
 struct GradientDescent_method {
-	double operator()(const std::string& function) {
+	long double operator()(const std::string& function) {
 		double eps = 1e-4;
 		double alpha = 1;
-		std::map<std::string, double> x;
+		std::map<std::string, long double> x;
 		x["x"] = 0;
-		x["x"] = 0;
-		std::map<std::string, double> newx;
+		x["y"] = 0;
+		std::map<std::string, long double> newx;
 		int it = 0;
 		while (true) {
-			std::vector<double> gradient = compute_gradient(Parser(function), x);
-			double len = norm(gradient);
+			std::vector<long double> gradient = compute_gradient(Parser(function), x);
+			long double len = norm(gradient);
 
 			if (len < eps) {
 				break;
@@ -27,8 +27,8 @@ struct GradientDescent_method {
 				newx[p.first] = x[p.first] - alpha * gradient[i];
 				i++;
 			}
-			double f = compute_function(function, x);
-			double f2 = compute_function(function, newx);
+			long double f = compute_function(function, x);
+			long double f2 = compute_function(function, newx);
 			if (f < f2) {
 				alpha /= 2;
 			}
