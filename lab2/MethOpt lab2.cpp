@@ -6,14 +6,21 @@
 
 int main()
 {
-	std::cout.precision(15);
-	std::map<std::string, double> x;
-	x["x"] = 0;
-	x["y"] = 0;
-	std::vector<std::vector<double>> _A = { {2, 2}, {2, 2} };
-	std::vector<double> _B = { 0, 0 };
-	double _C = 0;
-	ConjugateGradient_method cgm;
-	std::string func = "x * x - 2 * x + 125 + y * y - 2 * y";
-	std::cout << cgm(func);
+    std::cout.precision(15);
+    SteepestDescent_method<Dychotomy_method> sdm_d;
+    SteepestDescent_method<Golden_ratio_method> sdm_gr;
+    SteepestDescent_method<Parabola_method> sdm_p;
+    SteepestDescent_method<Fibonacci_method> sdm_f;
+    SteepestDescent_method<Combined_Brent_method> sdm_cb;
+    ConjugateGradient_method cgm;
+    std::string func = "-4*x - 2*y + x*x + y*y - 5";
+    std::string func1 = "64*x*x + 126*x*y + 64*y*y - 10*x + 30*y + 13";
+    std::string func2 = "x*x - 2*x*y + y*y";
+
+    std::cout << cgm(func) << "\n";
+    std::cout << sdm_d(func) << "\n";
+    std::cout << sdm_gr(func) << "\n";
+    std::cout << sdm_p(func) << "\n";
+    std::cout << sdm_f(func) << "\n";
+    std::cout << sdm_cb(func) << "\n";
 }

@@ -5,11 +5,11 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include "../lab1/Golden_ratio_method.h"
-template<typename Func>
-struct SteepestDescent_mathod {
 
-    long double operator()(const std::string &func,Func minimum ) {
+template<typename Minimum>
+struct SteepestDescent_method {
+
+    long double operator()(const std::string &func) {
         std::map<std::string, long double> x;
         double eps = 0.001;
         double eps1 = 1e-7;
@@ -24,7 +24,7 @@ struct SteepestDescent_mathod {
             }
             std::map<std::string, std::string> nx = newx(func, x);
             std::string fi = bringing_similar(substitute(func, nx), x);
-            long double alpha = minimum(fi, -2048, 2048, eps1);
+            long double alpha = Minimum()(fi, -2048, 2048, eps1);
             std::map<std::string, long double> alp;
             alp["x"] = alpha;
             auto xk =  matrix_sum(x, negate(const_multiply(alpha, grad)));
@@ -33,6 +33,7 @@ struct SteepestDescent_mathod {
                 return compute_function(func, xk);
             }
             x = xk;
+            iter++;
 
         }
     }

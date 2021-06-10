@@ -499,7 +499,6 @@ std::string substitute(const std::string &function, std::map<std::string, std::s
 
     std::vector<char> signs;
     std::vector<std::string> spl = split(signs, function);
-
     std::vector<std::pair<char, std::string>> con = conformity(signs, spl);
     for (int i = 0; i < con.size(); i++) {
         std::string tmp = con[i].second;
