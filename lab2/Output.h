@@ -26,6 +26,12 @@ void output(const std::map<std::string,long double>& x) {
 	}
 	std::cout << std::endl;
 }
+void output(const std::map<std::string,std::string>& x) {
+    for (const auto& p : x) {
+        std::cout << "{ " << p.first << ", " << p.second << " } ";
+    }
+    std::cout << std::endl;
+}
 
 void output(double a) {
 	std::cout << a << std::endl;

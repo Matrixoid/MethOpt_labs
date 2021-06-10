@@ -13,7 +13,7 @@ std::vector<std::string> split(std::vector<char> &signs, const std::string &func
     std::string ch;
     std::string cur;
     std::vector<std::string> spl;
-    if(function[0] != '+' && function[0] != '-') {
+    if (function[0] != '+' && function[0] != '-') {
         signs.push_back('+');
     }
     for (int i = 0; i < function.size(); i++) {
@@ -165,7 +165,7 @@ std::vector<std::string> Parser(const std::string &function) {
             grad_part += signs[sn] + gr;
             sn++;
         }
-        if (grad_part[0] == '+'){
+        if (grad_part[0] == '+') {
             grad_part = grad_part.substr(1);
         }
         grad.push_back(grad_part);
@@ -185,7 +185,7 @@ char get_sign(std::vector<char> signs, std::vector<std::string> vec, int i) {
     }
 }
 
-std::string bringing_similar(const std::string &function, const std::map<std::string, long  double> &x) {
+std::string bringing_similar(const std::string &function, const std::map<std::string, long double> &x) {
     std::string res;
 
     std::map<std::string, int> x_to_num;
@@ -408,38 +408,66 @@ std::vector<std::pair<char, std::string>> conformity(std::vector<char> signs, st
 
     return res;
 }
+std::string negate(std::string str){
+    std::string tmp;
+    if (str[0] != '-'){
+        tmp+='-';
+        tmp+=str[0];
+    }
+    for (int i = 1; i < str.size(); ++i) {
+        if (str[i]!='-' && str[i]!='+'){
+            tmp+=str[i];
+            continue;
+        }
+        if (str[i]== '-'){
+            tmp+='+';
+        }else{
+            tmp+='-';
+        }
+
+    }
+    return tmp;
+}
 
 std::string function_recovery(std::vector<std::pair<char, std::string>> p) {
     std::string res;
-    if (p.size() == 0) {
+    if (p.empty()) {
         return res;
     }
 
     if (p[0].first == '-') {
-        res += '-';
+        res+=negate(p[0].second);
+    }else{
+        res+=p[0].second;
     }
-    res += p[0].second;
+
 
     for (int i = 1; i < p.size(); i++) {
-        res += p[i].first + p[i].second;
+        if (p[i].first == '-'){
+            res+=negate(p[i].second);
+        }else{
+            res+= "+" + p[i].second;
+        }
     }
-
     return res;
+
+
 }
+
 
 std::string multiply_strings(const std::string &s1, const std::string &s2) {
     std::string res;
     std::vector<char> signs1;
     std::vector<std::string> spl1 = split(signs1, s1);
-    std::vector<std::pair<char, std::string>> con1 = conformity(signs1, spl1);
+    std::vector<std::pair<char, std::string>> con1 = conformity(signs1, spl1);// соотносит знак и число/переменную
     std::vector<char> signs2;
     std::vector<std::string> spl2 = split(signs2, s2);
     std::vector<std::pair<char, std::string>> con2 = conformity(signs2, spl2);
 
     std::vector<std::pair<char, std::string>> preres;
 
-    for (std::pair<char, std::string> c1 : con1) {
-        for (std::pair<char, std::string> c2 : con2) {
+    for (auto &c1 : con1) {
+        for (auto &c2 : con2) {
             std::pair<char, std::string> p;
             std::pair<char, std::string> c1_temp = c1;
             std::pair<char, std::string> c2_temp = c2;
@@ -461,16 +489,17 @@ std::string multiply_strings(const std::string &s1, const std::string &s2) {
                 p.second.erase(p.second.size() - 1);
             }
             preres.push_back(p);
-
         }
     }
     res = function_recovery(preres);
     return res;
 }
 
-std::string substitute(std::string function, std::map<std::string, std::string> x) {
+std::string substitute(const std::string &function, std::map<std::string, std::string> x) {
+
     std::vector<char> signs;
     std::vector<std::string> spl = split(signs, function);
+
     std::vector<std::pair<char, std::string>> con = conformity(signs, spl);
     for (int i = 0; i < con.size(); i++) {
         std::string tmp = con[i].second;
