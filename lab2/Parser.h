@@ -408,21 +408,22 @@ std::vector<std::pair<char, std::string>> conformity(std::vector<char> signs, st
 
     return res;
 }
-std::string negate(std::string str){
+
+std::string negate(std::string str) {
     std::string tmp;
-    if (str[0] != '-'){
-        tmp+='-';
-        tmp+=str[0];
+    if (str[0] != '-') {
+        tmp += '-';
+        tmp += str[0];
     }
     for (int i = 1; i < str.size(); ++i) {
-        if (str[i]!='-' && str[i]!='+'){
-            tmp+=str[i];
+        if (str[i] != '-' && str[i] != '+') {
+            tmp += str[i];
             continue;
         }
-        if (str[i]== '-'){
-            tmp+='+';
-        }else{
-            tmp+='-';
+        if (str[i] == '-') {
+            tmp += '+';
+        } else {
+            tmp += '-';
         }
 
     }
@@ -437,17 +438,17 @@ std::string function_recovery(std::vector<std::pair<char, std::string>> p) {
 
     if (p[0].first == '-') {
         res += negate(p[0].second);
-    }else{
-        res+=p[0].second;
+    } else {
+        res += p[0].second;
     }
 
 
     for (int i = 1; i < p.size(); i++) {
-        if (p[i].first == '-'){
+        if (p[i].first == '-') {
             res += negate(p[i].second);
-        }else{
+        } else {
             if (p[i].second.at(0) != '-')
-                res+= "+";
+                res += "+";
             res += p[i].second;
         }
     }

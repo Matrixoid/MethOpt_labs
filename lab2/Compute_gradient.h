@@ -183,6 +183,14 @@ std::vector<long double> const_multiply(long double constant, const std::vector<
     }
     return res;
 }
+std::vector<long double> const_divide(long double constant, const std::vector<long double>& p) {
+    std::vector<long double> res;
+    res.reserve(p.size());
+    for (long double i : p) {
+        res.push_back(i/constant);
+    }
+    return res;
+}
 
 double scalar_multiply(std::vector<long double> p1, std::vector<long double> p2) {
     double res = 0;
