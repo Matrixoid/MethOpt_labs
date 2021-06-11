@@ -11,31 +11,32 @@ struct SteepestDescent_method {
 
     long double operator()(const std::string &func) {
         std::map<std::string, long double> x;
-        double eps = 0.001;
-        double eps1 = 1e-7;
-        x["x"] = 4;
-        x["y"] = 5;
+        double eps = 0.01;
+        double eps1 = 1e-9;
+        x["x"] = 0;
+        x["y"] = 0;
         int iter = 0;
+        long double alpha = eps + 1;
+        long double diff = eps + 1;
         long double f = compute_function(func, x);
         while (true) {
             std::vector<long double> grad = compute_gradient(Parser(func), x);
-            if (norm(grad) < eps ) {
-                return compute_function(func, x);
+            if (norm(grad) < eps){
+                break;
             }
             std::map<std::string, std::string> nx = newx(func, x);
             std::string fi = bringing_similar(substitute(func, nx), x);
-            long double alpha = Minimum()(fi, -2048, 2048, eps1);
+            alpha = Minimum()(fi, 0, INT32_MAX, eps1);
             std::map<std::string, long double> alp;
             alp["x"] = alpha;
-            auto xk =  matrix_sum(x, negate(const_multiply(alpha, grad)));
-            auto diff = compute_function(func, x) - compute_function(func, xk);
-            if (std::abs(alpha) < eps || std::abs(diff) < eps){
-                return compute_function(func, xk);
-            }
+            auto xk =  compute_x(nx, alp);
+            diff = compute_function(func, x) - compute_function(func, xk);
             x = xk;
             iter++;
-
         }
+        std::cout << iter <<"\n";
+
+        return compute_function(func, x);
     }
 
 private:
@@ -43,6 +44,7 @@ private:
         std::map<std::string, std::string> nx;
         int i = 0;
         auto grad = compute_gradient(Parser(function), x);
+        grad = const_multiply(1/norm(grad), grad);
         for (std::pair<std::string, double> s : x) {
             std::string r = toString(s.second);
             long double gr = grad[i] ;

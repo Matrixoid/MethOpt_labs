@@ -436,7 +436,7 @@ std::string function_recovery(std::vector<std::pair<char, std::string>> p) {
     }
 
     if (p[0].first == '-') {
-        res+=negate(p[0].second);
+        res += negate(p[0].second);
     }else{
         res+=p[0].second;
     }
@@ -444,9 +444,11 @@ std::string function_recovery(std::vector<std::pair<char, std::string>> p) {
 
     for (int i = 1; i < p.size(); i++) {
         if (p[i].first == '-'){
-            res+=negate(p[i].second);
+            res += negate(p[i].second);
         }else{
-            res+= "+" + p[i].second;
+            if (p[i].second.at(0) != '-')
+                res+= "+";
+            res += p[i].second;
         }
     }
     return res;
