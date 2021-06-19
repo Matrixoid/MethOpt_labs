@@ -511,11 +511,11 @@ std::string substitute(const std::string &function, std::map<std::string, std::s
             temp_res = multiply_strings(temp_res, x[splm[j]]);
         }
         if (get_number(temp_res, 1).first == 1) {
-			con[i].second = remove_number(temp_res);
-		}
-		else {
-			con[i].second = temp_res;
-		}
+		con[i].second = remove_number(temp_res);
+	}
+	else {
+		con[i].second = temp_res;
+	}
     }
     return function_recovery(con);
 }
