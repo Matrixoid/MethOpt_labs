@@ -45,7 +45,7 @@ std::vector<std::string> split(std::vector<char> &signs, const std::string &func
 std::vector<std::string> split_by_mul(std::string part) {
     std::vector<std::string> spl;
     long double num = get_number(part, 1).first;
-    if (num == 1) {
+    if (num == 1 && part != "1") {
         spl.emplace_back("1");
     }
     std::string ch;
