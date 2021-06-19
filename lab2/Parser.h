@@ -510,7 +510,12 @@ std::string substitute(const std::string &function, std::map<std::string, std::s
         for (int j = 1; j < splm.size(); j++) {
             temp_res = multiply_strings(temp_res, x[splm[j]]);
         }
-        con[i].second = temp_res;
+        if (get_number(temp_res, 1).first == 1) {
+			con[i].second = remove_number(temp_res);
+		}
+		else {
+			con[i].second = temp_res;
+		}
     }
     return function_recovery(con);
 }
