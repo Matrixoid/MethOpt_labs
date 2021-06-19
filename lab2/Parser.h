@@ -503,7 +503,7 @@ std::string r(std::string func) {
 	std::vector<std::string> spl = split(signs, func);
 	std::vector<std::pair<char, std::string>> con = conformity(signs, spl);
 	for (std::pair<char, std::string>& p : con) {
-		int num = get_number(p.second, 1).first;
+		long double num = get_number(p.second, 1).first;
 		if (num == 1 && p.second != "1") {
 			p.second = remove_number(p.second);
 		}
