@@ -268,8 +268,7 @@ std::string bringing_similar(const std::string &function, const std::map<std::st
 
 }
 
-std::string
-return_function(std::vector<std::vector<double>> A, std::vector<double> B, double C, std::map<std::string, double> x) {
+std::string return_function(std::vector<std::vector<double>> A, std::vector<double> B, double C, std::map<std::string, long double> x) {
     std::string res;
 
     int i = 0;
@@ -295,7 +294,7 @@ return_function(std::vector<std::vector<double>> A, std::vector<double> B, doubl
         res.erase(res.size() - 1);
     }
 
-//    return bringing_similar(res, x);
+    return bringing_similar(res, x);
 }
 
 std::vector<int> get_indexes(std::string part, const std::map<std::string, long double> &x) {
@@ -479,7 +478,8 @@ std::string multiply_strings(const std::string &s1, const std::string &s2) {
             } else {
                 p.first = '+';
             }
-            p.second += toString(get_number(c1.second, 1).first * get_number(c2.second, 1).first) + "*";
+			std::string num = toString(get_number(c1.second, 1).first * get_number(c2.second, 1).first);
+            p.second += num + "*";
             c1_temp.second = remove_number(c1_temp.second);
             c2_temp.second = remove_number(c2_temp.second);
             if (!c1_temp.second.empty() && c2_temp.second.empty()) {
@@ -498,6 +498,19 @@ std::string multiply_strings(const std::string &s1, const std::string &s2) {
     return res;
 }
 
+std::string r(std::string func) {
+	std::vector<char> signs;
+	std::vector<std::string> spl = split(signs, func);
+	std::vector<std::pair<char, std::string>> con = conformity(signs, spl);
+	for (std::pair<char, std::string>& p : con) {
+		int num = get_number(p.second, 1).first;
+		if (num == 1 && p.second != "1") {
+			p.second = remove_number(p.second);
+		}
+	}
+	return function_recovery(con);
+}
+
 std::string substitute(const std::string &function, std::map<std::string, std::string> x) {
 
     std::vector<char> signs;
@@ -510,12 +523,7 @@ std::string substitute(const std::string &function, std::map<std::string, std::s
         for (int j = 1; j < splm.size(); j++) {
             temp_res = multiply_strings(temp_res, x[splm[j]]);
         }
-        if (get_number(temp_res, 1).first == 1) {
-		con[i].second = remove_number(temp_res);
-	}
-	else {
-		con[i].second = temp_res;
-	}
+		con[i].second = r(temp_res);
     }
     return function_recovery(con);
 }
