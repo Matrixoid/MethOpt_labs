@@ -11,12 +11,13 @@ struct ConjugateGradient_method {
 
     long double operator()(const std::string &function, long  double eps) {
         std::map<std::string, long double> x;
-        x["x"] = 1;
-        x["y"] = 1;
+        x["x"] = 0;
+        x["y"] = 0;
         std::vector<std::vector<long double>> A = get_A(function, x);
 
         std::vector<long double> grad = compute_gradient(Parser(function), x);
         std::vector<long double> p = negate(grad);
+        std::cout << compute_function(function, x) <<"\n";
         int iter = 0;
         while (norm(grad) > eps) {
             std::vector<long double> Ap = matrix_multiply(A, p);
@@ -26,6 +27,7 @@ struct ConjugateGradient_method {
             long double beta = (norm(newgrad) * norm(newgrad)) / (norm(grad) * norm(grad));
             p = matrix_sum(const_multiply(beta, p), negate(newgrad));
             grad = newgrad;
+            std::cout << compute_function(function, x)<<"\n";
             iter++;
         }
         std::cout << iter <<"\n";

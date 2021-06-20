@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include "Compute_gradient.h"
 #include "Parser.h"
 
@@ -34,6 +35,7 @@ struct GradientDescent_method {
                 alpha /= 2;
             }
             x = newx;
+            alpha = 10;
             it++;
         }
         std::cout << it << "\n";
