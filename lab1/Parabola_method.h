@@ -78,13 +78,12 @@ struct Parabola_method {
 		double f = function(x);
 		return f;
 	}
-    double operator()(std::string func, double a, double b, double eps) {
+    double operator()(std::string func, double a, double b, double eps, long double & x) {
         std::map<std::string, long double> x1;
         std::map<std::string, long double> x2;
         std::map<std::string, long double> x3;
         std::map<std::string, long double> x4;
         x1["x"] = a;
-        double x;
         x3["x"]  = b;
         double f1 = compute_function(func,x1);
         double f2;
@@ -150,6 +149,7 @@ struct Parabola_method {
             }
             i++;
         }
-        return x;
+        x1["x"] = x;
+        return compute_function(func, x1);
     }
 };

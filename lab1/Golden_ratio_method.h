@@ -36,7 +36,7 @@ struct Golden_ratio_method {
         return f;
     }
 
-    double operator()(std::string func, double a, double b, double eps) {
+    double operator()(std::string func, double a, double b, double eps,  long double &x) {
         double t = (sqrt(5) - 1) / 2;
         std::map<std::string, long double> x1;
         std::map<std::string, long double> x2;
@@ -63,9 +63,8 @@ struct Golden_ratio_method {
             }
             eps_n *= t;
         }
-        std::map<std::string, long double> x;
-        x["x"] = (a + b) / 2;
-        long double f = compute_function(func, x);
-        return x["x"];
+        x1["x"] = (a + b) / 2;
+        x = (a + b) / 2;
+        return compute_function(func, x1);
     }
 };

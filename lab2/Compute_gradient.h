@@ -49,7 +49,7 @@ long double compute_function(std::string function, std::map<std::string, long do
     for (std::string s : split) {
         if (s.empty())
             res--;
-        double temp_res = get_number(s, 1).first;
+        long double temp_res =  get_number(s,1).first;
         for (int i = 0; i < s.size(); i++) {
             std::string var;
             if (s[0] < '0' || s[0] > '9') {

@@ -9,6 +9,26 @@
 #include "get_Number.h"
 #include "Output.h"
 
+std::vector<long double> make_grad(std::map<std::string, long double> &x, std::vector<std::vector<long double>> A){
+    std::vector<long double> grad(A.size());
+    for (const auto& value:x) {
+        auto x_ = value.first;
+        int i = std::atoi(x_.substr(1).c_str()) - 1;
+        grad[i] = A[i][i] * value.second;
+    }
+    return grad;
+}
+long double compute(std::map<std::string, long double> &x, std::vector<std::vector<long double>> A){
+    long double result =0 ;
+    for (const auto& value:x) {
+        auto x_ = value.first;
+        int i = std::atoi(x_.substr(1).c_str()) - 1;
+        result+=( A[i][i] /2)* value.second * value.second;
+    }
+    return result;
+}
+
+
 std::vector<std::string> split(std::vector<char> &signs, const std::string &function) {
     std::string ch;
     std::string cur;
@@ -268,7 +288,7 @@ std::string bringing_similar(const std::string &function, const std::map<std::st
 
 }
 
-std::string return_function(std::vector<std::vector<double>> A, std::vector<double> B, double C, std::map<std::string, long double> x) {
+std::string return_function(std::vector<std::vector<long double>> A, std::vector<long double> B, long double C, std::map<std::string, long double> x) {
     std::string res;
 
     int i = 0;

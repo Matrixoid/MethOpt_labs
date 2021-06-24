@@ -23,7 +23,7 @@ struct Dychotomy_method {
         return f;
     }
 
-    double operator()(std::string func, double a, double b, double eps) {
+    double operator()(std::string func, double a, double b, double eps,  long double &x) {
         std::map<std::string, long double> x1;
         std::map<std::string, long double> x2;
         double d = eps;
@@ -38,7 +38,9 @@ struct Dychotomy_method {
             else
                 a = x1["x"];
         }
-        return  (a + b) / 2;
+        x =  (a + b) / 2;
+        x1["x"] = x;
+        return compute_function(func, x1);
     }
 
 };

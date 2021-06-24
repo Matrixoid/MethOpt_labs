@@ -41,10 +41,8 @@ struct Fibonacci_method {
         return f;
     }
 
-    double operator()(std::string func, double a, double b, double eps) {
-
+    double operator()(std::string func, double a, double b, double eps, long double &x) {
         computation_fib();
-
         int n = 0;
         int k = 0;
         double eps_n = (b - a) / eps;
@@ -75,8 +73,9 @@ struct Fibonacci_method {
             k++;
         }
 
-        double x = (x1["x"] + x2["x"]) / 2;
-        return x;
+        x = (x1["x"] + x2["x"]) / 2;
+        x1["x"] = x;
+        return compute_function(func, x1);
     }
 
 private:

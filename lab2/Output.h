@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
-
+#include <fstream>
 
 void output(std::vector<std::vector<long double>>& A) {
 	for (auto & i : A) {
@@ -20,11 +20,24 @@ void output(const std::vector<long double>& p) {
 	std::cout << std::endl;
 }
 
-void output(const std::map<std::string,long double>& x) {
+void output(const std::map<std::string,long double>& x ) {
+    for (const auto& p : x) {
+       std::cout << p.first<<": " << p.second <<" ";
+    }
+    std::cout <<"\n";
+}
+void output(const std::map<std::string,long double>& x, std::ostream &x_out ,std::ostream &y_out ) {
+    x_out.precision(15);
+    y_out.precision(15);
+
 	for (const auto& p : x) {
-		std::cout << "{ " << p.first << ", " << p.second << " } ";
+	    if (p.first == "x1") x_out << p.second <<" ";
 	}
-	std::cout << std::endl;
+	x_out << std::endl;
+    for (const auto& p : x) {
+        if (p.first == "x2") y_out << p.second <<" ";
+    }
+    y_out << std::endl;
 }
 void output(const std::map<std::string,std::string>& x) {
     for (const auto& p : x) {
