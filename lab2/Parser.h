@@ -9,21 +9,22 @@
 #include "get_Number.h"
 #include "Output.h"
 
-std::vector<long double> make_grad(std::map<std::string, long double> &x, std::vector<std::vector<long double>> A){
+std::vector<long double> make_grad(std::map<std::string, long double> &x, std::vector<std::vector<long double>> A) {
     std::vector<long double> grad(A.size());
-    for (const auto& value:x) {
+    for (const auto &value:x) {
         auto x_ = value.first;
         int i = std::atoi(x_.substr(1).c_str()) - 1;
         grad[i] = A[i][i] * value.second;
     }
     return grad;
 }
-long double compute(std::map<std::string, long double> &x, std::vector<std::vector<long double>> A){
-    long double result =0 ;
-    for (const auto& value:x) {
+
+long double compute(std::map<std::string, long double> &x, std::vector<std::vector<long double>> A) {
+    long double result = 0;
+    for (const auto &value:x) {
         auto x_ = value.first;
         int i = std::atoi(x_.substr(1).c_str()) - 1;
-        result+=( A[i][i] /2)* value.second * value.second;
+        result += (A[i][i] / 2) * value.second * value.second;
     }
     return result;
 }
@@ -127,13 +128,11 @@ std::vector<std::string> Parser(const std::string &function) {
     for (const std::string &s : spl) {
         get_vars(s, vars);
     }
-
     std::vector<std::string> variables;
     variables.reserve(vars.size());
     for (const std::string &s : vars) {
         variables.push_back(s);
     }
-
     std::vector<std::string> grad;
     for (int i = 0; i < variables.size(); i++) {
         std::vector<std::string> parts_grad_part;
@@ -165,7 +164,6 @@ std::vector<std::string> Parser(const std::string &function) {
                 }
                 cur = "";
             }
-
             std::pair<double, int> n = get_number(s, variables_cnt[i]);
             std::pair<std::string, int> num;
             num.first = toString(n.first);
@@ -190,7 +188,6 @@ std::vector<std::string> Parser(const std::string &function) {
         }
         grad.push_back(grad_part);
     }
-
     return grad;
 }
 
@@ -207,7 +204,6 @@ char get_sign(std::vector<char> signs, std::vector<std::string> vec, int i) {
 
 std::string bringing_similar(const std::string &function, const std::map<std::string, long double> &x) {
     std::string res;
-
     std::map<std::string, int> x_to_num;
     std::map<int, std::string> num_to_x;
     int k = 0;
@@ -283,12 +279,11 @@ std::string bringing_similar(const std::string &function, const std::map<std::st
             res += toString(C);
         }
     }
-
     return res;
-
 }
 
-std::string return_function(std::vector<std::vector<long double>> A, std::vector<long double> B, long double C, std::map<std::string, long double> x) {
+std::string return_function(std::vector<std::vector<long double>> A, std::vector<long double> B, long double C,
+                            std::map<std::string, long double> x) {
     std::string res;
 
     int i = 0;
@@ -328,7 +323,6 @@ std::vector<int> get_indexes(std::string part, const std::map<std::string, long 
     }
 
     std::vector<int> res;
-
     for (const std::string &s : spl) {
         if (x.find(s) != x.end()) {
             res.push_back(x_to_num[s]);
@@ -413,7 +407,6 @@ std::vector<std::vector<long double>> get_A(const std::string &function, const s
 
 std::vector<std::pair<char, std::string>> conformity(std::vector<char> signs, std::vector<std::string> spl) {
     std::vector<std::pair<char, std::string>> res;
-
     if (signs.size() == spl.size()) {
         for (int i = 0; i < signs.size(); i++) {
             res.push_back(std::make_pair(signs[i], spl[i]));
@@ -424,7 +417,6 @@ std::vector<std::pair<char, std::string>> conformity(std::vector<char> signs, st
             res.push_back(std::make_pair(signs[j - 1], spl[j]));
         }
     }
-
     return res;
 }
 
@@ -444,7 +436,6 @@ std::string negate(std::string str) {
         } else {
             tmp += '-';
         }
-
     }
     return tmp;
 }
@@ -454,14 +445,11 @@ std::string function_recovery(std::vector<std::pair<char, std::string>> p) {
     if (p.empty()) {
         return res;
     }
-
     if (p[0].first == '-') {
         res += negate(p[0].second);
     } else {
         res += p[0].second;
     }
-
-
     for (int i = 1; i < p.size(); i++) {
         if (p[i].first == '-') {
             res += negate(p[i].second);
@@ -472,8 +460,6 @@ std::string function_recovery(std::vector<std::pair<char, std::string>> p) {
         }
     }
     return res;
-
-
 }
 
 
@@ -498,7 +484,7 @@ std::string multiply_strings(const std::string &s1, const std::string &s2) {
             } else {
                 p.first = '+';
             }
-			std::string num = toString(get_number(c1.second, 1).first * get_number(c2.second, 1).first);
+            std::string num = toString(get_number(c1.second, 1).first * get_number(c2.second, 1).first);
             p.second += num + "*";
             c1_temp.second = remove_number(c1_temp.second);
             c2_temp.second = remove_number(c2_temp.second);
@@ -519,16 +505,16 @@ std::string multiply_strings(const std::string &s1, const std::string &s2) {
 }
 
 std::string r(std::string func) {
-	std::vector<char> signs;
-	std::vector<std::string> spl = split(signs, func);
-	std::vector<std::pair<char, std::string>> con = conformity(signs, spl);
-	for (std::pair<char, std::string>& p : con) {
-		long double num = get_number(p.second, 1).first;
-		if (num == 1 && p.second != "1") {
-			p.second = remove_number(p.second);
-		}
-	}
-	return function_recovery(con);
+    std::vector<char> signs;
+    std::vector<std::string> spl = split(signs, func);
+    std::vector<std::pair<char, std::string>> con = conformity(signs, spl);
+    for (std::pair<char, std::string> &p : con) {
+        long double num = get_number(p.second, 1).first;
+        if (num == 1 && p.second != "1") {
+            p.second = remove_number(p.second);
+        }
+    }
+    return function_recovery(con);
 }
 
 std::string substitute(const std::string &function, std::map<std::string, std::string> x) {
@@ -543,7 +529,7 @@ std::string substitute(const std::string &function, std::map<std::string, std::s
         for (int j = 1; j < splm.size(); j++) {
             temp_res = multiply_strings(temp_res, x[splm[j]]);
         }
-		con[i].second = r(temp_res);
+        con[i].second = r(temp_res);
     }
     return function_recovery(con);
 }

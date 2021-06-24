@@ -49,7 +49,7 @@ long double compute_function(std::string function, std::map<std::string, long do
     for (std::string s : split) {
         if (s.empty())
             res--;
-        long double temp_res =  get_number(s,1).first;
+        long double temp_res = get_number(s, 1).first;
         for (int i = 0; i < s.size(); i++) {
             std::string var;
             if (s[0] < '0' || s[0] > '9') {
@@ -81,7 +81,8 @@ long double compute_function(std::string function, std::map<std::string, long do
     return res;
 }
 
-std::vector<long double> compute_gradient(const std::vector<std::string> &gradient, const std::map<std::string, long double>& x) {
+std::vector<long double>
+compute_gradient(const std::vector<std::string> &gradient, const std::map<std::string, long double> &x) {
     std::vector<long double> result;
     result.reserve(gradient.size());
     for (const std::string &g : gradient) {
@@ -109,7 +110,8 @@ std::vector<long double> matrix_multiply(std::vector<std::vector<long double>> A
     return res;
 }
 
-std::vector<long double> matrix_multiply(const std::vector<std::vector<long double>>& A, std::map<std::string, double> x) {
+std::vector<long double>
+matrix_multiply(const std::vector<std::vector<long double>> &A, std::map<std::string, double> x) {
     std::vector<long double> res;
     for (auto &i : A) {
         double sum = 0;
@@ -135,7 +137,8 @@ std::vector<double> matrix_sum(std::map<std::string, double> x1, std::map<std::s
     return res;
 }
 
-std::map<std::string, long double> matrix_sum(const std::map<std::string, long double>& x1, std::vector<long double> x2) {
+std::map<std::string, long double>
+matrix_sum(const std::map<std::string, long double> &x1, std::vector<long double> x2) {
     std::map<std::string, long double> res;
     int i = 0;
     for (const auto &s : x1) {
@@ -154,7 +157,7 @@ std::vector<long double> matrix_sum(std::vector<long double> x1, std::vector<lon
     return res;
 }
 
-std::vector<long double> matrix_sub(std::map<std::string, long double> x1, std::map<std::string, long  double> x2) {
+std::vector<long double> matrix_sub(std::map<std::string, long double> x1, std::map<std::string, long double> x2) {
     std::vector<long double> res;
     auto it1 = x1.begin();
     auto it2 = x2.begin();
@@ -175,7 +178,7 @@ std::vector<long double> matrix_sub(std::vector<long double> x1, std::vector<lon
     return res;
 }
 
-std::vector<long double> const_multiply(long double constant, const std::vector<long double>& p) {
+std::vector<long double> const_multiply(long double constant, const std::vector<long double> &p) {
     std::vector<long double> res;
     res.reserve(p.size());
     for (long double i : p) {
@@ -183,11 +186,12 @@ std::vector<long double> const_multiply(long double constant, const std::vector<
     }
     return res;
 }
-std::vector<long double> const_divide(long double constant, const std::vector<long double>& p) {
+
+std::vector<long double> const_divide(long double constant, const std::vector<long double> &p) {
     std::vector<long double> res;
     res.reserve(p.size());
     for (long double i : p) {
-        res.push_back(i/constant);
+        res.push_back(i / constant);
     }
     return res;
 }
