@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <fstream>
 
@@ -14,6 +14,12 @@ struct Comp {
 };
 
 void profile(std::ifstream& input_file, long long n) {
+	
+	di.clear();
+	ia.clear();
+	al.clear();
+	au.clear();
+
 	ia.push_back(1);
 	std::vector <std::pair<long double, long long>> au_temp;
 	std::vector<long long> helper(n);
