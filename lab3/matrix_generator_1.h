@@ -15,9 +15,10 @@ std::vector<long double> operator*(const std::vector<std::vector<long double>> &
     return answer;
 
 }
+
 //NOTE: запуск генератора  make_matrix(n, "tests/test_for_n_");,
 // где n - размерность матрицы, директория должна быть создана ранее
-void make_matrix(int n, const std::string& dir) {
+void make_matrix(int n, const std::string &dir) {
     std::vector<std::vector<long double>> A;
     A.reserve(n);
     for (int i = 0; i < n; ++i) {
@@ -25,41 +26,52 @@ void make_matrix(int n, const std::string& dir) {
     }
     long double sum = 0;
     std::mt19937 gen(time(nullptr));
+    std::uniform_int_distribution<int> range(1, n / 2);
+    std::vector<int> profile(n);
+    for (int i = 0; i < n; ++i) {
+        profile[i] = range(gen);
+    }
+    std::uniform_int_distribution<int> n_range( -4, -1);
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            if (i != j) {
+            if ((j > profile[i] && j < i) || (i > profile[i] && i < j)) {
                 A[i][j] = ((int) gen() % 5) * -1;
-                sum += A[i][j];
             }
+            if (i == profile[j] || j == profile[i]) {
+                A[i][j] = n_range(gen);
+            }
+            sum += A[i][j];
+
         }
     }
-    for (int k = 0; k < 5; ++k) {
+    for (int k = 0; k <= 10; ++k) {
         for (int i = 0; i < n; ++i) {
             A[i][i] = -sum;
             if (i == 0) {
-                A[i][i] *= std::pow(10, -k);
+                A[i][i] += std::pow(10, -k);
             }
         }
-        std::ofstream out_file(dir + std::to_string(k + 1) + "/matrix");
+        std::ofstream out_file(dir + std::to_string(k) + "/matrix");
         out_file << n << std::endl;
         std::vector<long double> x_(n);
         for (int i = 0; i < n; ++i) {
             x_[i] = i + 1;
         }
         std::vector<long double> f = A * x_;
+        out_file.precision(10);
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 out_file << A[i][j] << " ";
             }
             out_file << std::endl;
         }
-        std::ofstream f_file(dir+ std::to_string(k + 1) + "/f");
+        std::ofstream f_file(dir + std::to_string(k) + "/f");
         for (int i = 0; i < n; ++i) {
-            f_file << f[i] <<  std::endl;
+            f_file << f[i] << std::endl;
         }
-        std::ofstream x_file(dir+ std::to_string(k + 1) + "/x");
+        std::ofstream x_file(dir + std::to_string(k ) + "/x");
         for (int i = 0; i < n; ++i) {
-            x_file <<i + 1 <<  std::endl;
+            x_file << i + 1 << std::endl;
         }
         x_file.close();
         f_file.close();
