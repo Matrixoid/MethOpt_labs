@@ -6,6 +6,10 @@ std::vector<long double> di;
 std::vector<long long> ia;
 std::vector<long double> al;
 std::vector<long double> au;
+std::vector<long double> b;
+std::vector<long double> x;
+
+double long eps = 1e-10;
 
 struct Comp {
 	bool operator()(std::pair<long double, int> a, std::pair<long double, int> b) {
