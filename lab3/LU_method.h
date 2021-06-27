@@ -48,26 +48,26 @@ std::vector<long double> return_y() {
 }
 
 std::vector<long double> return_x() {
-	std::vector<long double> x;
+	std::vector<long double> x1;
 	std::vector<long double> y = return_y();
 	for (long long i = di.size(); i >= 1; i--) {
 		long double sum = y[i - 1];
-		long long x_it = x.size();
-		for (long long j = di.size(); j >= di.size() - x.size(); j--) {
-			sum -= (x_it > 0) ? (x[x_it - 1] * get_element(i, j)) : 0;
+		long long x_it = x1.size();
+		for (long long j = di.size(); j >= di.size() - x1.size(); j--) {
+			sum -= (x_it > 0) ? (x1[x_it - 1] * get_element(i, j)) : 0;
 			x_it--;
 		}
-		sum /= get_elementU(i, di.size() - x.size());
-		x.insert(x.begin(), sum);
+		sum /= get_elementU(i, di.size() - x1.size());
+		x1.insert(x1.begin(), sum);
 	}
-	return x;
+	return x1;
 }
 
 std::vector<long double> LU_method() {
 	toLU();
 	std::vector<long double> y = return_y();
-	std::vector<long double> x = return_x();
-	return x;
+	std::vector<long double> x1 = return_x();
+	return x1;
 }
 
 void fromLU() {
