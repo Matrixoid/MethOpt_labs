@@ -2,21 +2,12 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include "ProfileMatrix.h"
 
-std::vector<long double> di;
-std::vector<long long> ia;
-std::vector<long double> al;
-std::vector<long double> au;
 std::vector<long double> b;
 std::vector<long double> x;
 
 double long eps = 1e-10;
-
-struct Comp {
-	bool operator()(std::pair<long double, int> a, std::pair<long double, int> b) {
-		return a.second < b.second;
-	}
-};
 
 
 // Получает элемент матрицы A с номером i, j
@@ -117,18 +108,87 @@ bool belongs_to_the_profile(long long i, long long j) {
 
 }
 
-//void toLU() {
-//	for (long long i = 1; i <= di.size(); i++) {
-//		long long cnt = ia[i] - ia[i - 1];
-//		for (long long j = i - cnt; j < i; j++) {
-//			long double a = get_element(i, j);
-//			for (long long k = j - cnt; k < j; k++) {
-//				a -= get_element(i, k) * get_element(k, j);
-//			}
-//			set_element(i, j, a);
-//		}
-//	}
-//}
+long double get_elementL(long long i, long long j) {
+	if (i == j) {
+		return di[i - 1];
+	}
+	else if (i > j) {
+		long long cnt = ia[i] - ia[i - 1];
+		if (j < i - cnt) {
+			return 0L;
+		}
+		else {
+			return al[ia[i - 1] - 1 + j - i + cnt];
+		}
+	}
+	else {
+		return 0L;
+	}
+}
+
+long double get_elementU(long long i, long long j) {
+	if (i == j) {
+		return 1L;
+	}
+	else if (i > j) {
+		return 0L;
+	}
+	else {
+		long long cnt = ia[j] - ia[j - 1];
+		if (i < j - cnt) {
+			return 0L;
+		}
+		else {
+			return au[ia[j - 1] - 1 + i - j + cnt];
+		}
+	}
+}
+
+void toLU() {
+	long long r = 1;
+	long long c = 1;
+
+	while (r - 1 != di.size() && c - 1 != di.size()) {
+		for (long long i = c; i <= di.size(); i++) {
+			if (i < c) {
+				break;
+			}
+			long long sum = 0;
+			for (long long k = 1; k <= c - 1; k++) {
+				sum += get_elementL(i, k) * get_elementU(k, c);
+			}
+			set_element(i, c, get_element(i, c) - sum);
+		}
+		c++;
+
+		for (long long j = r + 1; r != di.size() && j <= di.size(); j++) {
+			if (r >= j) {
+				break;
+			}
+			long long sum = 0;
+			for (long long k = 1; k <= r - 1; k++) {
+				sum += get_elementL(r, k) * get_elementU(k, j);
+			}
+			set_element(r, j, (get_element(r, j) - sum) / get_elementL(r, r));
+		}
+		r++;
+	}
+}
+
+void fromLU() {
+	std::ofstream F;
+	F.open("fromLU_matrix.txt");
+	for (long long i = 1; i <= di.size(); i++) {
+		for (long long j = 1; j <= di.size(); j++) {
+			long long sum = 0;
+			for (long long k = 1; k <= di.size(); k++) {
+				sum += get_elementL(i, k) * get_elementU(k, j);
+			}
+			F << sum << " ";
+		}
+		F << std::endl;
+	}
+}
 
 void multiply_string(long long i, long double m) {
 	for (long long j = 1; j <= di.size(); j++) {
@@ -147,6 +207,37 @@ void subtract_strings(long long i, long long j) {
 	}
 
 	b[j - 1] -= b[i - 1];
+}
+
+std::vector<long double> return_y() {
+	std::vector<long double> y;
+	for (long long i = 1; i <= di.size(); i++) {
+		long double sum = b[i - 1];
+		long long y_it = y.size();
+		for (long long j = 1; j <= y.size(); j++) {
+			sum -= (y_it > 0) ? (y[j - 1] * get_elementL(i, j)) : 0;
+			y_it--;
+		}
+		sum /= get_elementL(i, i);
+		y.push_back(sum);
+	}
+	return y;
+}
+
+std::vector<long double> return_x() {
+	std::vector<long double> x;
+	std::vector<long double> y = return_y();
+	for (long long i = di.size(); i >= 1; i--) {
+		long double sum = y[i - 1];
+		long long x_it = x.size();
+		for (long long j = di.size(); j >= di.size() - x.size(); j--) {
+			sum -= (x_it > 0) ? (x[x_it - 1] * get_element(i, j)) : 0;
+			x_it--;
+		}
+		sum /= get_elementU(i, di.size() - x.size());
+		x.insert(x.begin(), sum);
+	}
+	return x;
 }
 
 void return_x(long long i) {
@@ -186,75 +277,44 @@ void outputA() {
 	}
 }
 
+void outputL() {
+	for (long long i = 1; i <= di.size(); i++) {
+		for (long long j = 1; j <= di.size(); j++) {
+			std::cout << get_elementL(i, j) << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void outputU() {
+	for (long long i = 1; i <= di.size(); i++) {
+		for (long long j = 1; j <= di.size(); j++) {
+			std::cout << get_elementU(i, j) << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
 int main()
 {
-	std::fstream File;
-	File.open("input.txt");
+	std::ifstream File;
+	File.open("test2\\input.txt");
 
-	std::ofstream F;
-	F.open("output.txt");
+	std::ifstream ms;
+	ms.open("test2\\matrix_size.txt");
 
-	int n;
-	File >> n;
+	long long n;
+	ms >> n;
 
-	ia.push_back(1);
-	std::vector <std::pair<long double, int>> au_temp;
-	std::vector<int> helper(n);
+	profile(File, n);
 
-	for (int i = 0; i < n; i++) {
-		bool flagl = false;
-		int l = 0;
-		for (int j = 0; j < n; j++) {
-			double elem;
-			File >> elem;
-			if (i == j) {
-				di.push_back(elem);
-			}
-			else if (i > j) {
-				if (elem != 0)
-					flagl = true;
-				if (flagl) {
-					l++;
-					al.push_back(elem);
-				}
-			}
-			else {
-				if (elem != 0) {
-					helper[j] = helper[j] != 0 ? helper[j] : i + 1;
-				}
-			}
-		}
-		ia.push_back(ia[ia.size() - 1] + l);
-	}
-	File.close();
-
-	File.open("input.txt");
-	File >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; ++j) {
-			double elem;
-			File >> elem;
-			if (j > i) {
-				if (helper[j] <= i + 1 && helper[j] != 0) {
-					au_temp.emplace_back(elem, j);
-				}
-			}
-		}
-	}
-
-	File.close();
-	std::stable_sort(au_temp.begin(), au_temp.end(), Comp());
-
-	File.open("b.txt");
+	File.open("test2\\b.txt");
 	for (long long i = 0; i < n; i++) {
 		long double b_i;
 		File >> b_i;
 		b.push_back(b_i);
 	}
-
-	for (std::pair<double, int> u : au_temp) {
-		au.push_back(u.first);
-	}
+	File.close();
 
 	for (double d : di) {
 		std::cout << d << " ";
@@ -276,7 +336,19 @@ int main()
 	}
 	std::cout << std::endl << std::endl;
 
-	outputA();
+	toLU();
+	outputL();
+	std::cout << std::endl;
+	outputU();
+
+	std::vector<long double> x = return_x();
+	for (int i = 0; i < 4; i++) {
+		std::cout << x[i] << " ";
+	}
+
+	//fromLU();
+
+	/*outputA();
 	std::cout << std::endl;
 	Gauss();
 	outputA();
@@ -284,8 +356,5 @@ int main()
 
 	for (long long i = 0; i < x.size(); i++) {
 		std::cout << x[i] << " ";
-	}
-
-	File.close();
-	F.close();
+	}*/
 }
