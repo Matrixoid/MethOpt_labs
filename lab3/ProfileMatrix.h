@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include <fstream>
+#include "tests.h";
 
 std::vector<long double> di;
 std::vector<long long> ia;
@@ -55,7 +56,7 @@ void profile(std::ifstream& input_file, long long n) {
 	}
 	input_file.close();
 
-	input_file.open("test2\\input.txt");
+	input_file.open(test_directory + test_matrix);
 	for (long long i = 0; i < n; i++) {
 		for (long long j = 0; j < n; ++j) {
 			long double elem;

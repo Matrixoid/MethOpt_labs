@@ -45,7 +45,7 @@ long long number_of_nonzero_elements() {
 
 void dense_matrix_transforms() {
 
-	std::string file_name = "test2\\dens_matrix.txt";
+	std::string file_name = test_directory + "dense_matrix.txt";
 
 	std::ofstream File;
 	File.open(file_name);

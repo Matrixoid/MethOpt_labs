@@ -72,7 +72,7 @@ std::vector<long double> LU_method() {
 
 void fromLU() {
 
-	std::string file_name = "fromLU_matrix.txt";
+	std::string file_name = test_directory + "fromLU_matrix.txt";
 
 	std::ofstream F;
 	F.open(file_name);
