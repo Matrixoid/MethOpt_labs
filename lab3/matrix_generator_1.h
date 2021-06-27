@@ -52,7 +52,6 @@ void make_matrix(int n, const std::string &dir) {
             }
         }
         std::ofstream out_file(dir + std::to_string(k) + "/matrix");
-        out_file << n << std::endl;
         std::vector<long double> x_(n);
         for (int i = 0; i < n; ++i) {
             x_[i] = i + 1;
@@ -69,12 +68,15 @@ void make_matrix(int n, const std::string &dir) {
         for (int i = 0; i < n; ++i) {
             f_file << f[i] << std::endl;
         }
-        std::ofstream x_file(dir + std::to_string(k ) + "/x");
+        std::ofstream x_file(dir + std::to_string(k) + "/x");
         for (int i = 0; i < n; ++i) {
             x_file << i + 1 << std::endl;
         }
+        std::ofstream size_file(dir + std::to_string(k) + "/size");
+        size_file << n;
         x_file.close();
         f_file.close();
         out_file.close();
+        size_file.close();
     }
 }
