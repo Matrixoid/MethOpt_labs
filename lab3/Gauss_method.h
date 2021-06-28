@@ -81,6 +81,7 @@ void dense_matrix_transforms() {
 }
 
 std::vector<long double> Gauss() {
+    x.clear();
 
 	if (number_of_nonzero_elements() * 100 / (di.size() * di.size()) > 65L) {
 		dense_matrix_transforms();
@@ -89,7 +90,7 @@ std::vector<long double> Gauss() {
 	// Прямой ход
 	for (long long i = 1; i <= di.size(); i++) {
 		for (long long j = i + 1; j <= di.size(); j++) {
-			if (belongs_to_the_profile(j, i)) {
+			if (belongs_to_the_profile(j, i) && get_element(j,i)!= 0) {
 				multiply_string(j, get_element(i, i) / get_element(j, i));
 				subtract_strings(i, j);
 			}

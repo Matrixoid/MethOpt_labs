@@ -10,7 +10,7 @@ void toLU() {
 			if (i < c) {
 				break;
 			}
-			long long sum = 0;
+			long double sum = 0;
 			for (long long k = 1; k <= c - 1; k++) {
 				sum += get_elementL(i, k) * get_elementU(k, c);
 			}
@@ -22,7 +22,7 @@ void toLU() {
 			if (r >= j) {
 				break;
 			}
-			long long sum = 0;
+			long double sum = 0;
 			for (long long k = 1; k <= r - 1; k++) {
 				sum += get_elementL(r, k) * get_elementU(k, j);
 			}

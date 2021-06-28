@@ -31,14 +31,16 @@ void make_matrix(int n, const std::string &dir) {
     for (int i = 0; i < n; ++i) {
         profile[i] = range(gen);
     }
-    std::uniform_int_distribution<int> n_range( -4, -1);
+    std::uniform_int_distribution<int> n_range( 1, 4);
+    std::uniform_int_distribution<int> n1_range( 0, 4);
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            if ((j > profile[i] && j < i) || (i > profile[i] && i < j)) {
-                A[i][j] = ((int) gen() % 5) * -1;
+            if ((j > profile[i] && j < i) || (i > profile[j] && i < j)) {
+
+                A[i][j] = n1_range(gen)*(-1);
             }
             if (i == profile[j] || j == profile[i]) {
-                A[i][j] = n_range(gen);
+                A[i][j] = n_range(gen)*(-1);
             }
             sum += A[i][j];
 

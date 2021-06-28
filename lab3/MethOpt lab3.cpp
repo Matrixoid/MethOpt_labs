@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include "tests.h";
+#include "tests.h"
 #include "LU_method.h"
 #include "Gauss_method.h"
 
@@ -26,26 +26,26 @@ int main()
 		b.push_back(b_i);
 	}
 	File.close();
-
-	for (double d : di) {
-		std::cout << d << " ";
-	}
-	std::cout << std::endl;
-
-	for (int i : ia) {
-		std::cout << i << " ";
-	}
-	std::cout << std::endl;
-
-	for (double l : al) {
-		std::cout << l << " ";
-	}
-	std::cout << std::endl;
-	
-	for (double u : au) {
-		std::cout << u << " ";
-	}
-	std::cout << std::endl << std::endl;
+//
+//	for (double d : di) {
+//		std::cout << d << " ";
+//	}
+//	std::cout << std::endl;
+//
+//	for (int i : ia) {
+//		std::cout << i << " ";
+//	}
+//	std::cout << std::endl;
+//
+//	for (double l : al) {
+//		std::cout << l << " ";
+//	}
+//	std::cout << std::endl;
+//
+//	for (double u : au) {
+//		std::cout << u << " ";
+//	}
+//	std::cout << std::endl << std::endl;
 
 	std::vector<long double> ans1 = LU_method();
 	std::vector<long double> ans2 = Gauss();

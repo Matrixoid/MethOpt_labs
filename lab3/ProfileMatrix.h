@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include <fstream>
-#include "tests.h";
+#include "tests.h"
 
 std::vector<long double> di;
 std::vector<long long> ia;
