@@ -91,12 +91,12 @@ long double get_element(long long i, long long j) {
 		long long l = 0;
 		long long a = 0;
 		for (long long k = ia[i - 1] - 1; a <= cnt; k++) {
-			l++;
-			a++;
 			
-			if (l == cnt || ja[k] == j) {
+			if (k < ja.size() && ja[k] == j) {
 				break;
 			}
+			l++;
+			a++;
 		}
 		if (l >= cnt) {
 			return 0;
@@ -110,11 +110,11 @@ long double get_element(long long i, long long j) {
 		long long l = 0;
 		long long a = 0;
 		for (long long k = ia[j - 1] - 1; a <= cnt; k++) {
-			l++;
-			a++;
-			if (l == cnt || ja[k] == i) {
+			if (k < ja.size() && ja[k] == i) {
 				break;
 			}
+			l++;
+			a++;
 		}
 
 		if (l >= cnt) {
