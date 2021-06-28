@@ -20,7 +20,6 @@ void make_Gilbert_matrix(int n, const std::string &dir) {
         x_[i] = i + 1;
     }
     std::ofstream out_file(dir + "/matrix");
-    out_file << n << std::endl;
     std::vector<long double> f = A * x_;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
@@ -32,6 +31,15 @@ void make_Gilbert_matrix(int n, const std::string &dir) {
     for (int i = 0; i < n; ++i) {
         f_file << f[i] << std::endl;
     }
+    std::ofstream size_file(dir + "/size");
+    size_file << n;
+    size_file.close();
     f_file.close();
     out_file.close();
+    f_file.open(dir + "/x");
+    for (int i = 0; i < n; ++i) {
+        f_file << i + 1 << std::endl;
+    }
+    f_file.close();
+
 }
