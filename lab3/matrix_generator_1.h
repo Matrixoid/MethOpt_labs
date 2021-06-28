@@ -26,7 +26,7 @@ void make_matrix(int n, const std::string &dir) {
     }
     long double sum = 0;
     std::mt19937 gen(time(nullptr));
-    std::uniform_int_distribution<int> range(1, n / 2);
+    std::uniform_int_distribution<int> range(1, n);
     std::vector<int> profile(n);
     for (int i = 0; i < n; ++i) {
         profile[i] = range(gen);
@@ -59,14 +59,15 @@ void make_matrix(int n, const std::string &dir) {
             x_[i] = i + 1;
         }
         std::vector<long double> f = A * x_;
-        out_file.precision(10);
+        out_file.precision(20);
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-                out_file << A[i][j] << " ";
+                out_file <<  A[i][j] << " ";
             }
             out_file << std::endl;
         }
         std::ofstream f_file(dir + std::to_string(k) + "/f");
+        f_file.precision(20);
         for (int i = 0; i < n; ++i) {
             f_file << f[i] << std::endl;
         }
