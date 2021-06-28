@@ -89,11 +89,14 @@ long double get_element(long long i, long long j) {
 	else if (i > j) {
 		long long cnt = ia[i] - ia[i - 1];
 		long long l = 0;
-		for (long long k = ia[i - 1] - 1, long long a = 0; a <= cnt; k++, a++) {
-			if (ja[k] == j) {
+		long long a = 0;
+		for (long long k = ia[i - 1] - 1; a <= cnt; k++) {
+			l++;
+			a++;
+			
+			if (l == cnt || ja[k] == j) {
 				break;
 			}
-			l++;
 		}
 		if (l >= cnt) {
 			return 0;
@@ -105,11 +108,13 @@ long double get_element(long long i, long long j) {
 	else {
 		long long cnt = ia[j] - ia[j - 1];
 		long long l = 0;
-		for (long long k = ia[j - 1] - 1, long long a = 0; a <= cnt; k++, a++) {
-			if (ja[k] == i) {
+		long long a = 0;
+		for (long long k = ia[j - 1] - 1; a <= cnt; k++) {
+			l++;
+			a++;
+			if (l == cnt || ja[k] == i) {
 				break;
 			}
-			l++;
 		}
 
 		if (l >= cnt) {
@@ -123,7 +128,7 @@ long double get_element(long long i, long long j) {
 }
 
 long double norm(std::vector<long double> x) {
-	long double res;
+	long double res = 0;
 	for (long double i : x) {
 		res += i * i;
 	}
