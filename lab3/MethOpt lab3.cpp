@@ -23,7 +23,7 @@ int main()
 	for (long long i = 0; i < n; i++) {
 		long double b_i;
 		File >> b_i;
-		b.push_back(b_i);
+		f.push_back(b_i);
 	}
 	File.close();
 //
