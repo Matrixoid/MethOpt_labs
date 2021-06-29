@@ -1,274 +1,186 @@
 #pragma once
+
 #include <string>
 #include <vector>
-#include "../../MethOpt lab 2/MethOpt lab 2/GradientDescent_method.h"
-#include "../../MethOpt lab 2/MethOpt lab 2/Parser.h"
-#include "../../MethOpt lab 2/MethOpt lab 2/Compute_gradient.h"
+#include "../lab2/Parser.h"
+#include "../lab2/Compute_gradient.h"
+#include "../lab3/Gauss_method.h"
 
-double eps = 1e-7;
+double eps1 = 1e-7;
 
-double norm(const std::vector<double>& grad) {
-	double res = 0;
-	for (double i : grad)
-		res += i * i;
-	res = sqrt(res);
-	return res;
-}
-
-std::vector<double> matrix_sum(std::vector<double> x1, std::vector<double> x2) {
-	std::vector<double> res;
-	res.reserve(x1.size());
-	for (int i = 0; i < x1.size(); i++) {
-		res.push_back(x1[i] + x2[i]);
-	}
-	return res;
-}
-
-std::map<std::string, long double> matrix_sum(const std::map<std::string, long double>& x1, std::vector<long double> x2) {
-	std::map<std::string, long double> res;
-	int i = 0;
-	for (const auto& s : x1) {
-		res[s.first] = s.second + x2[i];
-		i++;
-	}
-	return res;
+long double matrix_multiply(std::vector<long double> x1, std::vector<long double> x2) {
+    long double res = 0;
+    for (int i = 0; i < x1.size(); i++) {
+        res += x1[i] * x2[i];
+    }
+    return res;
 }
 
 std::vector<double> matrix_sub(std::vector<double> x1, std::vector<double> x2) {
-	std::vector<double> res;
-	res.reserve(x1.size());
-	for (int i = 0; i < x1.size(); i++) {
-		res.push_back(x1[i] - x2[i]);
-	}
-	return res;
-}
-
-long double compute_function(std::string function, std::map<std::string, long double> x) {
-	std::string cur;
-	std::vector<char> signs;
-	signs.push_back('+');
-	std::vector<std::string> split;
-	std::string ch;
-	for (int i = 0; i < function.size(); i++) {
-		if (function[i] == ' ') {
-			continue;
-		}
-		if (function[i] == '+' || function[i] == '-') {
-			signs.push_back(function[i]);
-			if (ch == " ") {
-				cur.pop_back();
-			}
-			split.push_back(cur);
-			cur = "";
-			continue;
-		}
-		cur += function[i];
-		ch = function[i];
-
-		if (i == function.size() - 1) {
-			split.push_back(cur);
-			cur = "";
-			ch = "";
-		}
-	}
-
-	double res = 0;
-	int sn = 0;
-	for (std::string s : split) {
-		if (s.empty())
-			res--;
-		long double temp_res = get_number(s, 1).first;
-		for (int i = 0; i < s.size(); i++) {
-			std::string var;
-			if (s[0] < '0' || s[0] > '9') {
-				while (s[i] != 42 && i < s.size()) {
-					var += s[i];
-					i++;
-				}
-				temp_res *= x[var];
-				var = "";
-				ch = "";
-			}
-			if (ch == "*") {
-				while (s[i] != 42 && i < s.size()) {
-					var += s[i];
-					i++;
-				}
-				temp_res *= x[var];
-				var = "";
-			}
-			ch = s[i];
-		}
-		if (signs[sn] == '+') {
-			res += temp_res;
-		}
-		else {
-			res -= temp_res;
-		}
-		sn++;
-	}
-	return res;
-}
-long double compute_function(std::string function, std::map<std::string, long double> x) {
-	std::string cur;
-	std::vector<char> signs;
-	signs.push_back('+');
-	std::vector<std::string> split;
-	std::string ch;
-	for (int i = 0; i < function.size(); i++) {
-		if (function[i] == ' ') {
-			continue;
-		}
-		if (function[i] == '+' || function[i] == '-') {
-			signs.push_back(function[i]);
-			if (ch == " ") {
-				cur.pop_back();
-			}
-			split.push_back(cur);
-			cur = "";
-			continue;
-		}
-		cur += function[i];
-		ch = function[i];
-
-		if (i == function.size() - 1) {
-			split.push_back(cur);
-			cur = "";
-			ch = "";
-		}
-	}
-
-	double res = 0;
-	int sn = 0;
-	for (std::string s : split) {
-		if (s.empty())
-			res--;
-		long double temp_res = get_number(s, 1).first;
-		for (int i = 0; i < s.size(); i++) {
-			std::string var;
-			if (s[0] < '0' || s[0] > '9') {
-				while (s[i] != 42 && i < s.size()) {
-					var += s[i];
-					i++;
-				}
-				temp_res *= x[var];
-				var = "";
-				ch = "";
-			}
-			if (ch == "*") {
-				while (s[i] != 42 && i < s.size()) {
-					var += s[i];
-					i++;
-				}
-				temp_res *= x[var];
-				var = "";
-			}
-			ch = s[i];
-		}
-		if (signs[sn] == '+') {
-			res += temp_res;
-		}
-		else {
-			res -= temp_res;
-		}
-		sn++;
-	}
-	return res;
+    std::vector<double> res;
+    res.reserve(x1.size());
+    for (int i = 0; i < x1.size(); i++) {
+        res.push_back(x1[i] - x2[i]);
+    }
+    return res;
 }
 
 
-std::vector<long> matrix_multiply(std::vector<std::vector<long long>> A, std::vector<long long> p) {
-	std::vector<long> res;
-	for (auto& i : A) {
-		double sum = 0;
-		for (int j = 0; j < i.size(); j++) {
-			sum += i[j] * p[j];
-		}
-		res.push_back(sum);
-	}
-	return res;
+std::vector<long double> solve(const std::string &filename, const std::vector<long double> &f1) {
+    test_directory = "conditions";
+    test_matrix = filename;
+    for (long double i : f1) {
+        b.push_back(i);
+    }
+    std::ifstream File("conditions/" + filename);
+    profile(File, f1.size());
+    File.close();
+    return Gauss();
 }
 
 struct Newtone_methods {
-	double Newtone()(std::string funct, double a, double b) {
-		std::map<std::string, double> x0;
-		x0["x"] = 0;
-		x0["y"] = 0;
-		std::map<std::string, double> curX = x0;
-		double diff = 1000;
-		int iteration = 0;
-		while (diff > eps) {
-			iteration++;
-			std::map<std::string, double> prevX = curX;
-			//результат градиентного метода
-			GradientDescent_method gdm;
-			std::vector<double> p = gdm(gessian(function), multiply(compute_gradient(Parser(function), prevX), -1), epsilon);
-			curX = matrix_sum(prevX, p);
-			diff = norm(matrix_sub(curX, prevX));
-		}
 
-		return compute_function(function, curX);
-	};
+    static long double test_function(std::map<std::string, long double> &x_) {
+        auto x1 = x_["x1"], x2 = x_["x2"];
+        return x1 * x1 + x2 * x2;
+    }
 
-	double Linear_Newtone() {
-		std::map<std::string, double> x0;
-		x0["x"] = 0;
-		x0["y"] = 0;
-		std::map<std::string, double> prevX = x0;
-		std::vector<double> p = gdm(gessian(function), matrix_multiply(compute_gradient(Parser(function), prevX), -1), epsilon);
+    static std::vector<long double> gradient_function(std::map<std::string, long double> &x_) {
+        auto x1 = x_["x1"], x2 = x_["x2"];
+        return {2 * x1, 2 * x2};
+    }
 
-		std::vector<double> curX = matrix_sum(prevX, p);
-		double diff = norm(matrix_sub(curX, prevX));
-		while (diff > eps&& norm(p) > eps) {
-			prevX = curX;
-			std::vector<double> p = gdm(gessian(function), matrix_multiply(compute_gradient(Parser(function), prevX), -1), epsilon);//результат градиентного метода
+    static std::vector<std::vector<long double>> gessian_function(std::map<std::string, long double> &x_) {
+        auto x1 = x_["x1"], x2 = x_["x2"];
+        return {{2},
+                {0},
+                {0},
+                {2}};
+    }
 
-			std::vector<double> fPrevX = prevX;
-			std::vector<double> fP = p;
+    static long double f(long double var, std::vector<long double> p_k, std::map<std::string, long double> x_k) {
+        std::map<std::string, long double> new_x;
+        for (int i = 0; i < p_k.size(); ++i) {
+            new_x["x" + std::to_string(i)] = x_k["x" + std::to_string(i)] - var * p_k[i];
+        }
+        return test_function(new_x);
+    }
 
-			double a = 1;
-			a = matrix_sum(finalPrevX, matrix_multiply(finalP, a));
-			a = BrentSearch(function, a, -111, 111, eps);
+    static long double Newtone(std::map<std::string, long double> curX) {
+        std::map<std::string, long double> prevX;
+        long double diff = 1000;
+        int iteration = 0;
+        std::vector<long double> p;
+        while (diff > eps1) {
+            iteration++;
+            prevX = curX;
+            make_gessian_matrix("matrix", prevX);
+            p = solve("matrix", const_multiply(-1, gradient_function(curX)));
+            curX = matrix_sum(prevX, p);
+            diff = norm(matrix_sub(curX, prevX));
+            if (norm(p) < eps1) {
+                break;
+            }
+        }
+        std::cout << iteration;
+        return test_function(curX);
+    };
 
-			curX = matrix_sum(prevX, matrix_multiply(p, a));
-			diff = norm(matrix_sub(curX, prevX))
-		}
+    static long double Linear_Newtone(std::map<std::string, long double> x_1) {
+        std::vector<long double> p;
+        long double diff = 1000;
+        auto iteration = 0;
+        while (diff > eps1) {
+            iteration++;
+            make_gessian_matrix("matrix", x_1);
+            p = solve("matrix", const_multiply(-1, gradient_function(x_1)));
+            Golden_ratio_method grt;
+            auto alpha = grt(f, 0, INT32_MAX, p, x_1);
+            auto x_2 = matrix_sum(x_1, const_multiply(alpha, p));
+            diff = norm(matrix_sub(x_2, x_1));
+            x_1 = x_2;
+            if (norm(p) < eps1) {
+                break;
+            }
+        }
+        std::cout << iteration;
+        return test_function(x_1);
+    }
 
-		return curX;
-	}
+    long double DecentDirection_Newtone(std::map<std::string, long double> x0) {
 
-	double DecentDirection_Newtone() {
-		std::vector<double> d0 = matrix_multiply(compute_gradient(Parser(function), x0), -1);
-		double a0 = 1;
-		a0 = matrix_sum(x0, multiply(d0, a0))
-			a0 = BrentSearch(function, a, -111, 111, epsilon);
-		std::vector<double> nextX = matrix_sum(x0, matrix_multiply(d0, alpha0));
-		double diff = norm(matrix_sub(nextX, x0));
+        std::vector<long double> p_k = const_multiply(-1, gradient_function(x0));
 
-		while (diff > epsilon) {
-			std::vector<double> prevX = nextX;
-			std::vector<double> grad = compute_gradient(Parser(function), prevX);
-			std::vector<double> antiGrad = matrix_multiply(grad, -1);
-			std::vector<double> p = gdm(gessian(prevX), antiGrad, epsilon);
+        Golden_ratio_method grt;
+        auto alpha = grt(f, 0, INT32_MAX, p_k, x0);
 
-			std::vector<double> direction(0);
-			double result = 0;
-			for (int i = 0; i < p.size(); i++) {
-				result += p[i] * gradient[i];
-			}
-			if (result >= 0)
-				direction = antiGrad;
-			else
-				direction = p;
+        auto x_k = matrix_sum(x0, const_multiply(alpha, p_k));
 
-			double a = 1;
-			a = matrix_sum(prevX, matrix_multiply(direction, a));
-			a = BrentSearch(function, a, -111, 111, epsilon);
-			nextX = matrix_sum(prevX, matrix_multiply(direction, a));
+        long double diff = norm(matrix_sub(x0, x_k));
+        auto iteration = 0;
 
-			diff = norm(matrix_sub(nextX, prevX));
-		}
+        while (diff > eps1) {
+            iteration++;
+            auto grad = gradient_function(x_k);
+            auto r_grad =const_multiply(-1, grad);// -grad(x_k);
+            make_gessian_matrix("matrix", x_k);
+            p_k = solve("matrix", r_grad);
+            if (matrix_multiply(p_k, grad) > 0) {
+                p_k = r_grad;
+            }
+            alpha = grt(f, 0, INT32_MAX, p_k, x_k);
+            x_k = matrix_sum(x0, const_multiply(alpha, p_k));
+        }
 
-		return nextX;
-	}
-}
+        return test_function(x_k);
+    }
+
+private:
+    static void make_gessian_matrix(const std::string &filename,
+                                    std::map<std::string, long double> &currentX) {
+        auto gessian = gessian_function(currentX);
+        std::ofstream File("conditions/" + filename);
+        for (auto &i : gessian) {
+            for (long double j : i) {
+                File << j << " ";
+            }
+            File << std::endl;
+        }
+
+    }
+
+    struct Golden_ratio_method {
+        long double operator()(
+                const std::function<long double(long double, std::vector<long double>,
+                                                std::map<std::string, long double>)> &func,
+                long double a, long double b_,
+                const std::vector<long double> &p_k, const std::map<std::string, long double> &x_k) {
+            long double t = (sqrt(5) - 1) / 2;
+
+            long double x1 = a + (1 - t) * (b_ - a);
+            long double x2 = a + t * (b_ - a);
+
+            long double f1 = func(x1, p_k, x_k);
+            long double f2 = func(x2, p_k, x_k);
+            long double eps_n = (b_ - a) / 2;
+
+            while (eps_n > eps) {
+                if (f1 - f2 <= eps) {
+                    b_ = x2;
+                    x2 = x1;
+                    f2 = f1;
+                    x1 = a + (1 - t) * (b_ - a);
+                    f1 = func(x1, p_k, x_k);
+                } else {
+                    a = x1;
+                    x1 = x2;
+                    f1 = f2;
+                    x2 = a + t * (b_ - a);
+                    f2 = func(x2, p_k, x_k);
+                }
+                eps_n *= t;
+            }
+            return (a + b_) / 2;
+        }
+    };
+};
