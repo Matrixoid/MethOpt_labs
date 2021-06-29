@@ -23,6 +23,7 @@ struct Comp {
 void sparse(std::ifstream& input_file, long long n) {
 	di.clear();
 	ia.clear();
+	ja.clear();
 	al.clear();
 	au.clear();
 
@@ -91,7 +92,6 @@ long double get_element(long long i, long long j) {
 		long long l = 0;
 		long long a = 0;
 		for (long long k = ia[i - 1] - 1; a <= cnt; k++) {
-			
 			if (k < ja.size() && ja[k] == j) {
 				break;
 			}
@@ -127,21 +127,21 @@ long double get_element(long long i, long long j) {
 	}
 }
 
-long double norm(std::vector<long double> x) {
-	long double res = 0;
-	for (long double i : x) {
-		res += i * i;
-	}
-	res = sqrt(res);
-	return res;
+long double norm(const std::vector<long double>& x1) {
+    long double res = 0;
+    for (long double i : x1) {
+        res += i * i;
+    }
+    res = sqrt(res);
+    return res;
 }
 
-std::vector<long double> matrix_multiply(std::vector<long double> x) {
+std::vector<long double> matrix_multiply(std::vector<long double> x1) {
 	std::vector<long double> res;
 	for (long long i = 1; i <= di.size(); i++) {
 		long double sum = 0;
 		for (long long j = 1; j <= di.size(); j++) {
-			sum += get_element(i, j) * x[j - 1];
+			sum += get_element(i, j) * x1[j - 1];
 		}
 		res.push_back(sum);
 	}
@@ -180,11 +180,11 @@ std::vector<long double> const_multiply(long double c, std::vector<long double> 
 	return res;
 }
 
-void ConjugateGradient_method() {
+std::vector<long double> ConjugateGradient_method(int &iter) {
 
 	std::vector<long double> curX;
 	for (long long i = 1; i <= di.size(); i++) {
-		curX.push_back(0);
+		curX.push_back(10);
 	}
 	std::vector<long double> newX = curX;
 
@@ -195,25 +195,31 @@ void ConjugateGradient_method() {
 	std::vector<long double> curZ = curR;
 	std::vector<long double> newZ = curZ;
 
-	long long maxK = 10000;
+	int maxK = 10000;
 	long double a;
 	long double b;
-	
-	for (long long i = 0; i < maxK; i++) {
-		a = scalar_multiply(curR, curR) / scalar_multiply(matrix_multiply(curZ), curZ);
+	iter = -1;
+
+	for (int i = 0; i < maxK; i++) {
+	    auto tmp = scalar_multiply(curR, curR);
+		a = tmp / scalar_multiply(matrix_multiply(curZ), curZ);
 		newX = matrix_sum(curX, const_multiply(a, curZ));
 		newR = matrix_sub(curR, const_multiply(a, matrix_multiply(curZ)));
-		b = scalar_multiply(newR, newR) / scalar_multiply(curR, curR);
-		newZ = matrix_sum(curR, const_multiply(b, curZ));
+		b = scalar_multiply(newR, newR) /tmp;
+		newZ = matrix_sum(newR, const_multiply(b, curZ));
 		curX = newX;
 		curZ = newZ;
 		curR = newR;
 		if ((norm(newR) / norm(f)) < eps) {
+		    iter = i+1;
 			break;
 		}
+		//std::cout << i <<"\n";
 	}
-
-	x = newX;
-	x = newX;
+	if (iter == -1){
+	    iter = maxK;
+	}
+    x = newX;
+	return x;
 
 }
