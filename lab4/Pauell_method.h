@@ -4,6 +4,10 @@
 #include "../../MethOpt lab 2/MethOpt lab 2/Compute_gradient.h"
 #include "../../MethOpt lab 2/MethOpt lab 2/get_Number.h"
 #include "../../MethOpt lab 2/MethOpt lab 2/Parser.h"
+#include "../../MethOpt lab1/MethOpt lab1/Combined_Brent_method.h"
+#include "Util.h"
+
+long double eps = 1e-7;
 
 std::map<std::string, long double> matrix_sub(std::map<std::string, long double> x1, std::map<std::string, long double> x2) {
 	std::map<std::string, long double> res;
@@ -26,48 +30,59 @@ double scalar_multiply(std::map<std::string, long double> x1, std::map<std::stri
 }
 
 struct Pauell_method {
-	std::vector<double> Pauell(std::string function, double a, double b) {
-		int iteration = 0;
-		std::map<std::string, long double> x0;
-		x0["x"] = 2;
-		x0["y"] = -5;
-		std::vector<std::vector<long double>> C(x0.size(), std::vector<long double>(x0.size()));
-		for (int i = 0; i < x0.size(); i++) {
-			C[i][i] = 1;
-		}
-		double Eps = 1E-7;
-		std::vector<long double> w = const_multiply(-1, compute_gradient(Parser(function), x0));
-		while (norm(w) > Eps) {
-			int i = 0;
-			while (norm(w) > Eps&& i < w.size()) {
-				std::vector<long double> p = matrix_multiply(C, w);
-				long long al = BrendtSearch(function, al, 0, 10, Eps);
-				al = matrix_sum(x0, const_multiply(al, p));
-				p = const_multiply(al, p);
-				std::map<std::string, long double> nextX = matrix_sum(x0, p);
-				std::vector<long double> nextW = const_multiply(-1, compute_gradient(Parser(function), nextX));
-				std::map<std::string, long double> deltaX = matrix_sub(nextX, x0);
-				std::vector<long double> deltaW = matrix_sub(nextW, w);
-				std::map<std::string, long double> deltaX1 = matrix_sum(deltaX, matrix_multiply(C, deltaW));
-				double tmp = 0;
-				for (int i = 0; i < deltaW.size(); i++) {
-					tmp += deltaW[i] * deltaX1[i];
-				}
-				double p1 = 1 / tmp;
-				C = matrix_sub(C, matrix_multiply(matrix_multiply(deltaX, deltaX), p1));
-				x0 = nextX;
-				w = nextW;
-				i++;
-			}
-			iteration = iteration + i;
+	std::vector<long double> operator()(std::string func) {
+		std::map<std::string, long double> curX = initial_approximation(2, { 0, 0 });
+		std::vector<std::vector<long double>> curG = return_identity_matrix(curX.size());
+		std::vector<long double> grad = compute_gradient(Parser(func), curX);
+		std::vector<long double> curW = const_multiply(-1, grad);
+		std::vector<long double> curP = curW;
+		long double alpha = 1;
+		std::map<std::string, std::string> nx = newx(curP, curX);
+		std::map<std::string, long double> alp;
+		alp["x"] = 1;
+		std::string fi = bringing_similar(substitute(func, nx), alp);
+		Combined_Brent_method cbm;
+		alpha = cbm(fi, 0, 10, eps);
 
-			std::vector < std::vector <long double >> C3(x0.size(), std::vector<long double>(x0.size()));
-			for (int i = 0; i < x0.size(); i++) {
-				C3[i][i] = 1;
+		std::map<std::string, long double> newX = matrix_sum(curX, const_multiply(alpha, curP));
+		std::map<std::string, long double> deltaX = matrix_sub(newX, curX);
+		std::map<std::string, long double> deltaX_ = matrix_sum(deltaX, matrix_multiply(curG, curW));
+		curX = newX;
+
+		while (true) {
+			std::vector<long double> newW = const_multiply(-1, compute_gradient(Parser(func), curX));
+			std::vector<long double> deltaW = matrix_sub(newW, curW);
+			std::vector<long double> Gw = matrix_multiply(curG, curW);
+			std::vector<long double> vectorX = return_vector(deltaX_);
+			long double xw = scalar_multiply(vectorX, deltaW);
+			long double k = scalar_multiply(Gw, curW);
+			std::vector<long double> r = matrix_sub(matrix_div(Gw, k), matrix_div(vectorX, xw));
+
+			std::vector<std::vector<long double>> first_term = curG;
+			std::vector<std::vector<long double>> second_term = matrix_div(matrix_transpode_multiply(vectorX), xw);
+
+			std::vector<std::vector<long double>> newG = matrix_sub(first_term, second_term);
+
+			std::vector<long double> newP = matrix_multiply(newG, newW);
+			nx = newx(newP, curX);
+			alp["x"] = 1;
+			std::string fi = bringing_similar(substitute(func, nx), alp);
+			Combined_Brent_method cbm;
+			alpha = cbm(fi, 0, 10, eps);
+
+			std::map<std::string, long double> newX = matrix_sub(curX, const_multiply(alpha, newP));
+			deltaX = matrix_sub(newX, curX);
+			std::map<std::string, long double> deltaX_ = matrix_sum(deltaX, matrix_multiply(curG, curW));
+
+			curW = newW;
+			curX = newX;
+			curG = newG;
+			curP = newP;
+
+			if (norm(return_vector(deltaX)) < eps) {
+				return return_vector(deltaX);
 			}
-			C = C3;
-			w = const_multiply(-1, compute_gradient(Parser(function), x0));
+
 		}
-		return x0;
 	}
 };
