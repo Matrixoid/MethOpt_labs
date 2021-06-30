@@ -4,19 +4,18 @@
 #include <vector>
 #include "functions.h"
 
-#define function func2
-double a = -1;
-double b = 1;
+#define function1 func2
+
 
 double extr(double a, double b, double eps) {
 	double res = a;
 	double min = 1000000;
 	for (double i = a; i < b; i += eps) {
-		double f = function(res);
+		double f = function1(res);
 		if (f <= min) {
 			res = i;
 			min = f;
 		}
 	}
-	return function(res);
+	return function1(res);
 }

@@ -7,7 +7,7 @@
 #include "../../MethOpt lab 2/MethOpt lab 2/Parser.h"
 #include "../../MethOpt lab1/MethOpt lab1/Combined_Brent_method.h"
 
-double eps = 1e-7;
+double eps1 = 1e-7;
 
 struct Broyden_Fletcher_Sheno_method {
 
@@ -23,7 +23,7 @@ struct Broyden_Fletcher_Sheno_method {
 		alp["x"] = 1;
 		std::string fi = bringing_similar(substitute(func, nx), alp);
 		Combined_Brent_method cbm;
-		alpha = cbm(fi, 0, 10, eps);
+		alpha = cbm(fi, 0, 10, eps1);
 		
 		std::map<std::string, long double> newX = matrix_sum(curX, const_multiply(alpha, curP));
 		std::map<std::string, long double> deltaX = matrix_sub(newX, curX);
@@ -50,7 +50,7 @@ struct Broyden_Fletcher_Sheno_method {
 			alp["x"] = 1;
 			std::string fi = bringing_similar(substitute(func, nx), alp);
 			Combined_Brent_method cbm;
-			alpha = cbm(fi, 0, 10, eps);
+			alpha = cbm(fi, 0, 10, eps1);
 
 			std::map<std::string, long double> newX = matrix_sub(curX, const_multiply(alpha, newP));
 			deltaX = matrix_sub(newX, curX);
@@ -60,7 +60,7 @@ struct Broyden_Fletcher_Sheno_method {
 			curG = newG;
 			curP = newP;
 
-			if (norm(return_vector(deltaX)) < eps) {
+			if (norm(return_vector(deltaX)) < eps1) {
 				return return_vector(deltaX);
 			}
 
