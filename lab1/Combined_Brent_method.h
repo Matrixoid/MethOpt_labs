@@ -10,13 +10,13 @@ struct Combined_Brent_method {
         double d_cur, d_prev;
         d_cur = d_prev = b - a;
         double g;
-        double f = function(x);
+        double f = function1(x);
         double fw = f, fv = f;
 
         while (true) {
 
             if (std::max(x - a, b - x) < eps) {
-                f = function(x);
+                f = function1(x);
                 return f;
             }
 
@@ -37,7 +37,7 @@ struct Combined_Brent_method {
                 }
             }
             d_cur = std::abs(u - x);
-            double fu = function(u);
+            double fu = function1(u);
             if (fu > f) {
                 if (u < x)
                     a = u;
@@ -69,11 +69,11 @@ struct Combined_Brent_method {
         }
     }
 
-    double operator()(std::string func, double a, double b, double eps, long double &x) {
+    double operator()(std::string func, double a, double b, double eps) {
         std::map<std::string, long double> x_;//Просто какой-то массив, с помощью которого я вычисляю функцию
         double t = (3 - sqrt(5)) / 2;
         double w, v, u;
-        x = w = v = a + t * (b - a);
+        auto x = w = v = a + t * (b - a);
         double d_cur, d_prev;
         d_cur = d_prev = b - a;
         double g;

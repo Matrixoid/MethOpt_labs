@@ -6,7 +6,7 @@
 #include "../lab2/Compute_gradient.h"
 #include "../lab3/Gauss_method.h"
 
-double eps1 = 1e-7;
+long double eps2 = 1e-9;
 
 long double matrix_multiply(std::vector<long double> x1, std::vector<long double> x2) {
     long double res = 0;
@@ -16,8 +16,8 @@ long double matrix_multiply(std::vector<long double> x1, std::vector<long double
     return res;
 }
 
-std::vector<double> matrix_sub(std::vector<double> x1, std::vector<double> x2) {
-    std::vector<double> res;
+std::vector<long double> matrix_sub(std::vector<double> x1, std::vector<double> x2) {
+    std::vector<long double> res;
     res.reserve(x1.size());
     for (int i = 0; i < x1.size(); i++) {
         res.push_back(x1[i] - x2[i]);
@@ -25,13 +25,29 @@ std::vector<double> matrix_sub(std::vector<double> x1, std::vector<double> x2) {
     return res;
 }
 
+long double norm(const std::map<std::string, long double> &x_) {
+    long double res = 0;
+    for (auto &x1: x_) {
+        res += x1.second * x1.second;
+    }
+    return sqrt(res);
+}
+
 
 std::vector<long double> solve(const std::string &filename, const std::vector<long double> &f1) {
-    test_directory = "conditions";
+    test_directory = "conditions/";
     test_matrix = filename;
+    test_matrix_size = "size";
+    test_f = "f.txt";
+    std::ofstream ofile("conditions/" + test_f);
+    x.clear();
+    b.clear();
+    ofile.precision(10);
     for (long double i : f1) {
+        ofile << i << "\n";
         b.push_back(i);
     }
+    ofile.close();
     std::ifstream File("conditions/" + filename);
     profile(File, f1.size());
     File.close();
@@ -41,73 +57,71 @@ std::vector<long double> solve(const std::string &filename, const std::vector<lo
 struct Newtone_methods {
 
     static long double test_function(std::map<std::string, long double> &x_) {
-        auto x1 = x_["x1"], x2 = x_["x2"];
-        return x1 * x1 + x2 * x2;
+        auto x1 = x_["x1"];
+        auto x2 = x_["x2"];
+        return std::cos(x1 +3.14) + x2*x2;
     }
 
     static std::vector<long double> gradient_function(std::map<std::string, long double> &x_) {
         auto x1 = x_["x1"], x2 = x_["x2"];
-        return {2 * x1, 2 * x2};
+        return {-std::sin(x1 +3.14), 2*x2};
     }
 
     static std::vector<std::vector<long double>> gessian_function(std::map<std::string, long double> &x_) {
         auto x1 = x_["x1"], x2 = x_["x2"];
-        return {{2},
-                {0},
-                {0},
-                {2}};
+        return {{-std::cos(x1 +3.14),    0},
+                {0, 2}};
     }
 
     static long double f(long double var, std::vector<long double> p_k, std::map<std::string, long double> x_k) {
         std::map<std::string, long double> new_x;
         for (int i = 0; i < p_k.size(); ++i) {
-            new_x["x" + std::to_string(i)] = x_k["x" + std::to_string(i)] - var * p_k[i];
+            new_x["x" + std::to_string(i + 1)] = x_k["x" + std::to_string(i + 1)] + var * p_k[i];
         }
         return test_function(new_x);
     }
 
-    static long double Newtone(std::map<std::string, long double> curX) {
+    static long double Newtone(std::map<std::string, long double> curX, int & iteration) {
         std::map<std::string, long double> prevX;
         long double diff = 1000;
-        int iteration = 0;
+        iteration = 0;
         std::vector<long double> p;
-        while (diff > eps1) {
+        while (diff > eps2) {
             iteration++;
             prevX = curX;
-            make_gessian_matrix("matrix", prevX);
-            p = solve("matrix", const_multiply(-1, gradient_function(curX)));
+            make_gessian_matrix("matrix.txt", prevX);
+            p = solve("matrix.txt", const_multiply(-1, gradient_function(prevX)));
             curX = matrix_sum(prevX, p);
             diff = norm(matrix_sub(curX, prevX));
             if (norm(p) < eps1) {
                 break;
             }
         }
-        std::cout << iteration;
         return test_function(curX);
     };
 
-    static long double Linear_Newtone(std::map<std::string, long double> x_1) {
+    static long double Linear_Newtone(std::map<std::string, long double> x_1,int & iteration) {
         std::vector<long double> p;
         long double diff = 1000;
-        auto iteration = 0;
-        while (diff > eps1) {
+        iteration = 0;
+        auto x_2 = x_1;
+        while (diff > eps2) {
             iteration++;
-            make_gessian_matrix("matrix", x_1);
-            p = solve("matrix", const_multiply(-1, gradient_function(x_1)));
+            x_1 = x_2;
+            make_gessian_matrix("matrix.txt", x_1);
+            p = solve("matrix.txt", const_multiply(-1, gradient_function(x_1)));
             Golden_ratio_method grt;
             auto alpha = grt(f, 0, INT32_MAX, p, x_1);
-            auto x_2 = matrix_sum(x_1, const_multiply(alpha, p));
-            diff = norm(matrix_sub(x_2, x_1));
-            x_1 = x_2;
+            x_2 = matrix_sum(x_1, const_multiply(alpha, p));
+            diff = norm(matrix_sub(x_1, x_2));
             if (norm(p) < eps1) {
                 break;
             }
         }
-        std::cout << iteration;
-        return test_function(x_1);
+        return test_function(x_2);
     }
 
-    long double DecentDirection_Newtone(std::map<std::string, long double> x0) {
+    static long double DecentDirection_Newtone(std::map<std::string, long double> x0, int & iteration) {
 
         std::vector<long double> p_k = const_multiply(-1, gradient_function(x0));
 
@@ -117,21 +131,23 @@ struct Newtone_methods {
         auto x_k = matrix_sum(x0, const_multiply(alpha, p_k));
 
         long double diff = norm(matrix_sub(x0, x_k));
-        auto iteration = 0;
+        iteration = 0;
 
-        while (diff > eps1) {
+        while (diff > eps2) {
             iteration++;
             auto grad = gradient_function(x_k);
-            auto r_grad =const_multiply(-1, grad);// -grad(x_k);
-            make_gessian_matrix("matrix", x_k);
-            p_k = solve("matrix", r_grad);
+            auto r_grad = const_multiply(-1, grad);// -grad(x_k);
+            make_gessian_matrix("matrix.txt", x_k);
+            p_k = solve("matrix.txt", r_grad);
             if (matrix_multiply(p_k, grad) > 0) {
                 p_k = r_grad;
             }
             alpha = grt(f, 0, INT32_MAX, p_k, x_k);
-            x_k = matrix_sum(x0, const_multiply(alpha, p_k));
+            auto x_n = matrix_sum(x_k, const_multiply(alpha, p_k));
+            diff = norm(matrix_sub(x_n, x_k));
+            x_k = x_n;
         }
-
+        //std::cout << iteration << "\n";
         return test_function(x_k);
     }
 
@@ -146,6 +162,7 @@ private:
             }
             File << std::endl;
         }
+        File.close();
 
     }
 

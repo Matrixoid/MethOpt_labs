@@ -2,7 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "../../MethOpt lab 2/MethOpt lab 2/get_Number.h"
+#include "../lab2/get_Number.h"
 
 std::vector<std::vector<long double>> return_identity_matrix(long long size) {
 	std::vector<std::vector<long double>> I(size, std::vector<long double>(size));

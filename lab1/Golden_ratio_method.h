@@ -10,8 +10,8 @@ struct Golden_ratio_method {
         double x1 = a + (1 - t) * (b - a);
         double x2 = a + t * (b - a);
 
-        double f1 = function(x1);
-        double f2 = function(x2);
+        double f1 = func2(x1);
+        double f2 = func2(x2);
         double eps_n = (b - a) / 2;
 
         while (eps_n > eps) {
@@ -20,19 +20,19 @@ struct Golden_ratio_method {
                 x2 = x1;
                 f2 = f1;
                 x1 = a + (1 - t) * (b - a);
-                f1 = function(x1);
+                f1 = func2(x1);
             } else {
                 a = x1;
                 x1 = x2;
                 f1 = f2;
                 x2 = a + t * (b - a);
-                f2 = function(x2);
+                f2 = func2(x2);
             }
             eps_n *= t;
         }
 
         double x = (a + b) / 2;
-        double f = function(x);
+        double f = func2(x);
         return f;
     }
 

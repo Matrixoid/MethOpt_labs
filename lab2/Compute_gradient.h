@@ -7,9 +7,9 @@
 
 #include "get_Number.h"
 
-long double norm(const std::vector<long double> &grad) {
+long double norm(const std::vector<long double> &x1) {
     long double res = 0;
-    for (long double i : grad)
+    for (long double i : x1)
         res += i * i;
     res = sqrt(res);
     return res;
@@ -157,7 +157,7 @@ std::vector<long double> matrix_sum(std::vector<long double> x1, std::vector<lon
     return res;
 }
 
-std::vector<long double> matrix_sub(std::map<std::string, long double> x1, std::map<std::string, long double> x2) {
+std::vector<long double> matrix_sub1(std::map<std::string, long double> x1, std::map<std::string, long double> x2) {
     std::vector<long double> res;
     auto it1 = x1.begin();
     auto it2 = x2.begin();

@@ -7,17 +7,6 @@
 #include "../../MethOpt lab1/MethOpt lab1/Combined_Brent_method.h"
 #include "Util.h"
 
-long double eps = 1e-7;
-
-std::map<std::string, long double> matrix_sub(std::map<std::string, long double> x1, std::map<std::string, long double> x2) {
-	std::map<std::string, long double> res;
-	std::map<std::string, long double>::iterator it1 = x1.begin();
-	std::map<std::string, long double>::iterator it2 = x2.begin();
-	while (it1 != x1.end()) {
-		res[(*it1).first] = (*it1).second - (*it2).second;
-	}
-	return res;
-}
 
 double scalar_multiply(std::map<std::string, long double> x1, std::map<std::string, long double> x2) {
 	double sum = 0;
